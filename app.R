@@ -41,16 +41,16 @@ options(
   spinner.hide.ui = TRUE
 )
 
-rebl_items <- readRDS('rebl_items.rds')
-rebl_text <- readRDS('rebl_text.rds')
-baseline_model <- readRDS('baseline_model.rds')
+rebl_items <- readRDS('data/rebl_items.rds')
+rebl_text <- readRDS('data/rebl_text.rds')
+baseline_model <- readRDS('data/baseline_model.rds')
 
-source('get_person_fit.R')
-source('get_item_fit.R')
-source('plotPImap2.R')
-source('link_tests.R')
-source('read_erm.R')
-source('test_uni_pcar.R')
+source('R/get_person_fit.R')
+source('R/get_item_fit.R')
+source('R/plotPImap2.R')
+source('R/link_tests.R')
+source('R/read_erm.R')
+source('R/test_uni_pcar.R')
 
 
 
