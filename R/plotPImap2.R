@@ -1,3 +1,52 @@
+#' Enhanced Person-Item Map Plotting Function
+#'
+#' An enhanced version of the eRm plotPImap function with additional customization options
+#' and improved visualization features for Rasch model analysis.
+#'
+#' @param object An eRm model object (RM, RSM, or PCM). LLTM, LRSM, and LPCM are not supported.
+#' @param item.subset Character vector specifying which items to include. Use "all" for all items,
+#'   or provide a vector of item names/indices. Default is "all".
+#' @param sorted Logical. Should items be sorted by difficulty? Default is FALSE.
+#' @param main Character string for the main title. Default is "Person-Item Map".
+#' @param latdim Character string for the x-axis label. Default is "Latent Dimension".
+#' @param pplabel Character string for the person parameter distribution label.
+#'   Default is "Person\nParameter\nDistribution".
+#' @param cex.gen Numeric value for general text size scaling. Default is 0.7.
+#' @param xrange Numeric vector of length 2 specifying x-axis range. If NULL (default),
+#'   range is calculated automatically.
+#' @param warn.ord Logical. Should warnings for disordered thresholds be displayed? Default is TRUE.
+#' @param warn.ord.colour Character string specifying color for disordered threshold warnings.
+#'   Default is "black".
+#' @param irug Logical. Should item threshold rug be displayed? Default is TRUE.
+#' @param pp A person.parameter object. If NULL (default), it will be calculated from the model.
+#' @param margins Numeric vector of length 4 specifying plot margins (bottom, left, top, right).
+#'   Default is c(2.5, 4, 0, 1).
+#'
+#' @return No return value. Function creates a plot.
+#'
+#' @details This function creates a person-item map showing the distribution of person abilities
+#' and item difficulties on the same scale. It displays:
+#' \itemize{
+#'   \item Person parameter distribution (top panel)
+#'   \item Item thresholds and difficulties (bottom panel)
+#'   \item Warnings for disordered thresholds (if enabled)
+#' }
+#'
+#' The function only works with RM, RSM, and PCM models from the eRm package.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Basic person-item map
+#' plotPImap2(rasch_model)
+#'
+#' # Customized map with sorted items
+#' plotPImap2(rasch_model, sorted = TRUE, main = "My REBL Analysis")
+#'
+#' # Map with specific item subset
+#' plotPImap2(rasch_model, item.subset = c("item1", "item5", "item10"))
+#' }
 plotPImap2 <- function (object,
                         item.subset = "all",
                         sorted = FALSE,
@@ -12,6 +61,41 @@ plotPImap2 <- function (object,
                         pp = NULL,
                         margins = c(2.5, 4, 0, 1))
 {
+
+  # Input validation
+  assertthat::assert_that(
+    inherits(object, "eRm"),
+    msg = "object must be an eRm model object"
+  )
+  assertthat::assert_that(
+    is.logical(sorted),
+    msg = "sorted must be logical"
+  )
+  assertthat::assert_that(
+    is.character(main) && length(main) == 1,
+    msg = "main must be a single character string"
+  )
+  assertthat::assert_that(
+    is.numeric(cex.gen) && length(cex.gen) == 1 && cex.gen > 0,
+    msg = "cex.gen must be a positive numeric value"
+  )
+  assertthat::assert_that(
+    is.null(xrange) || (is.numeric(xrange) && length(xrange) == 2),
+    msg = "xrange must be NULL or a numeric vector of length 2"
+  )
+  assertthat::assert_that(
+    is.logical(warn.ord),
+    msg = "warn.ord must be logical"
+  )
+  assertthat::assert_that(
+    is.logical(irug),
+    msg = "irug must be logical"
+  )
+  assertthat::assert_that(
+    is.numeric(margins) && length(margins) == 4,
+    msg = "margins must be a numeric vector of length 4"
+  )
+
   def.par <- par(no.readonly = TRUE)
   if ((object$model == "LLTM") || (object$model == "LRSM") ||
       (object$model == "LPCM"))
@@ -25,7 +109,7 @@ plotPImap2 <- function (object,
   }
   else {
     dRm <- FALSE
-    threshtable <- thresholds(object)$threshtable[[1]]
+    threshtable <- eRm::thresholds(object)$threshtable[[1]]
   }
   tr <- as.matrix(threshtable)
   if (is.character(item.subset)) {
@@ -52,7 +136,7 @@ plotPImap2 <- function (object,
   loc <- as.matrix(tr[, 1])
   tr <- as.matrix(tr[, -1])
   if (is.null(pp))
-    suppressWarnings(pp <- person.parameter(object))
+    suppressWarnings(pp <- eRm::person.parameter(object))
   else if ((!("ppar" %in% class(pp))) || !identical(pp$X, object$X))
     stop("pp is not a person.parameter object which matches the main Rasch data object!")
   theta <- unlist(pp$thetapar)
