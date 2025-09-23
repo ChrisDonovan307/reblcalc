@@ -43,8 +43,9 @@ options(
 
 # rebl_items <- readRDS('data/rebl_items.rds')
 # rebl_text <- readRDS('data/rebl_text.rds')
-data(rebl_text)
 # baseline_model <- readRDS('data/baseline_model.rds')
+data(rebl_items)
+data(rebl_text)
 
 # source('R/get_person_fit.R')
 # source('R/get_item_fit.R')
@@ -56,6 +57,8 @@ data(rebl_text)
 # Load modules
 source('R/mod_landing_page.R')
 source('R/mod_rebl_items_page.R')
+source('R/mod_skim_page.R')
+source('R/mod_import.R')
 
 
 
@@ -96,15 +99,8 @@ ui <- fluidPage(
         )
       ),
 
-      # Upload data
-      fileInput(
-        'file',
-        'Upload .csv or .xlsx file',
-        accept = c('.csv', '.xlsx', '.xls')
-      ),
-
-      # Select respondent ID column
-      uiOutput('dropdown_columns'),
+      # File import module
+      import_ui('import'),
 
       # User options
       uiOutput('impute_button'),
@@ -132,10 +128,8 @@ ui <- fluidPage(
             div(uiOutput('model_tests'))
           )
         ),
-        # tabPanel('REBL Items', withSpinner(uiOutput('rebl_items_page'))),
         tabPanel('REBL Items', withSpinner(rebl_items_page_ui('rebl_items_page'))),
-
-        tabPanel('Skim', withSpinner(uiOutput('skim_page'))),
+        tabPanel('Skim', withSpinner(skim_page_ui('skim_page'))),
         tabPanel('Imputation', withSpinner(tableOutput('imp_page'))),
         tabPanel('Item Map', withSpinner(uiOutput('item_map_page'))),
         tabPanel('ICC Plot', withSpinner(uiOutput('icc_page'))),
@@ -159,89 +153,26 @@ server <- function(input, output, session) {
   # becomes model test page
   analysis_state <- reactiveVal(FALSE)
 
-  # Landing page server. Only appears if analysis state is true
+
+  # Servers -----------------------------------------------------------------
+
+  # Import module server
+  import_values <- import_server('import', rebl_items)
+
+  # Landing page turns into model tests if analysis state is true
   landing_page_server('landing_page', analysis_state)
   rebl_items_page_server('rebl_items_page')
+  skim_page_server('skim_page', import_values$rval_df)
 
 
   # Import File ------------------------------------------------------------
-
-  rval_df <- eventReactive(input$file, {
-
-    # Make sure file is uploaded
-    req(input$file)
-
-    # Read data frame from uploaded file
-    if (tools::file_ext(input$file$name) == "csv") {
-      df <- read_csv(input$file$datapath)
-    } else if (tools::file_ext(input$file$name) %in% c("xlsx", "xls")) {
-      df <- read_excel(input$file$datapath)
-    } else {
-      stop("Unsupported file format.")
-    }
-
-    # Make sure rebl items are numeric
-    df <- df %>%
-      mutate(across(all_of(rebl_items), as.numeric))
-
-    # Make sure all REBL items are in DF
-    if (!all(rebl_items %in% names(df))) {
-      stop(
-        'File must contain all 24 REBL items by name. Reload app and check
-          Info tab for a list of items.'
-      )
-    }
-
-    # Make sure no one answered either all 1 or all 0
-    bad_patterns <- which(rowSums(select(df, all_of(rebl_items)), na.rm = TRUE) %in% c(0, 24))
-    if (length(bad_patterns) > 0) {
-      stop(
-        'Cannot calculate REBL Score for person(s) ',
-        paste0(bad_patterns, collapse = ', '),
-        ' due to unacceptable pattern of responses. Check to make sure they ',
-        'answered at least one question "yes" and at least one question "no".'
-      )
-    }
-
-    # Notify them if there is a lot of missing data
-    if (all(rebl_items %in% names(df))) {
-      n_miss <- df %>%
-        select(all_of(rebl_items)) %>%
-        is.na() %>%
-        sum()
-      if (n_miss >= 2000) {
-        showModal(modalDialog(
-          title = 'Warning',
-          paste0(
-            'There are ',
-            format(n_miss, big.mark = ','),
-            ' missing values in the REBL item columns of your dataset. Be
-            aware that whether or not you decide to impute these data, the
-            run time of your analysis could increase substantially. Explore
-            your data in the "Skim" tab to see where the missing values are.'
-          ),
-          easyClose = TRUE,
-          footer = modalButton('OK')
-        ))
-      }
-    }
-
-  return(df)
-})
-
-  # Get column names to send back to UI to choose respondent ID
-  output$dropdown_columns <- renderUI({
-    column_names <- colnames(rval_df())
-    tagList(
-      selectInput('respondent_id', 'Select Person ID Column', choices = column_names)
-    )
-  })
+  # Import functionality now handled by import module
 
 
   # User Options ------------------------------------------------------------
 
   output$impute_button <- renderUI({
-    req(input$file)
+    req(import_values$file_input())
     awesomeCheckbox(
       inputId = "impute_option",
       label = "Impute missing data",
@@ -250,7 +181,7 @@ server <- function(input, output, session) {
   })
 
   output$link_button <- renderUI({
-    req(input$file)
+    req(import_values$file_input())
     awesomeCheckbox(
       inputId = "link_option",
       label = "Link and rescale scores",
@@ -259,7 +190,7 @@ server <- function(input, output, session) {
   })
 
   output$lr_button <- renderUI({
-    req(input$file)
+    req(import_values$file_input())
     awesomeCheckbox(
       inputId = "lr_option",
       label = "LR test of invariance",
@@ -268,7 +199,7 @@ server <- function(input, output, session) {
   })
 
   output$pcar_button <- renderUI({
-    req(input$file)
+    req(import_values$file_input())
     awesomeCheckbox(
       inputId = "pcar_option",
       label = "PCAR test of unidimensionality",
@@ -351,13 +282,13 @@ server <- function(input, output, session) {
   rval_imp_out <- eventReactive(input$run_analysis, {
 
     # First reorder the DF to put respondent id first, then rebl items in order
-    df <- rval_df() %>%
-      select(input$respondent_id, all_of(rebl_items))
+    df <- import_values$rval_df() %>%
+      select(import_values$respondent_id(), all_of(rebl_items))
 
     if (input$impute_option == FALSE) {
       return(df)
     } else {
-      if (sum(is.na(select(rval_df(), all_of(rebl_items)))) == 0) {
+      if (sum(is.na(select(import_values$rval_df(), all_of(rebl_items)))) == 0) {
         showModal(modalDialog(
           title = 'Error',
           'The "impute missing data" button was checked, but there is no
@@ -394,7 +325,7 @@ server <- function(input, output, session) {
     } else if (input$impute_option == TRUE) {
       rval_imp_out()$ximp %>%
         mutate(across(everything(), ~ as.numeric(.) - 1)) %>%
-        bind_cols(rval_df() %>% select(-all_of(rebl_items)))
+        bind_cols(import_values$rval_df() %>% select(-all_of(rebl_items)))
     }
   })
 
@@ -460,7 +391,7 @@ server <- function(input, output, session) {
 
   # Show run analysis button only once file is input
   output$analysis_button <- renderUI({
-    req(input$file)
+    req(import_values$file_input())
     actionButton(
       'run_analysis',
       'Run Analysis',
@@ -479,7 +410,7 @@ server <- function(input, output, session) {
     req(rval_df_clean())
 
     # Check for unique respondent ID column
-    if (any(duplicated(rval_df()[[input$respondent_id]]))) {
+    if (any(duplicated(import_values$rval_df()[[import_values$respondent_id()]]))) {
       stop(
         'The respondent ID column that you have selected does not uniquely',
         ' identify respondents. Please choose another column.'
@@ -663,13 +594,13 @@ server <- function(input, output, session) {
 
   person_fit_data <- reactive({
     out <- rval_model() %>%
-      get_person_fit(rval_df_clean(), input$respondent_id)
+      get_person_fit(rval_df_clean(), import_values$respondent_id())
 
     if (exists('rval_rescaled_scores') && input$link_option == TRUE) {
       out <- out %>%
         rename(rebl_unscaled = rebl_score) %>%
         mutate(rebl_score = rval_rescaled_scores()) %>%
-        select(input$respondent_id, rebl_score, rebl_unscaled, everything())
+        select(import_values$respondent_id(), rebl_score, rebl_unscaled, everything())
     }
     return(out)
   })
@@ -1037,32 +968,6 @@ server <- function(input, output, session) {
   })
 
 
-  # Skim --------------------------------------------------------------------
-
-  output$skim_page <- renderUI({
-    req(rval_df())
-    tagList(
-      fluidRow(
-        column(12, uiOutput('skim_title')),
-        column(12, verbatimTextOutput('skim'))
-      )
-    )
-  })
-
-  output$skim_title <- renderUI({
-    req(rval_df())
-    HTML(
-      '<h3 style="color: #2F4F4F; font-weight: bold;">Skim</h3>
-      <p>Explore summary statistics and missing values from your dataset.</p>'
-    )
-  })
-
-  output$skim <- renderPrint({
-    req(rval_df())
-    skim(rval_df(), .data_name = 'Your_Data') %>%
-      select(-ends_with('hist'))
-  })
-
 
   # Download zip ------------------------------------------------------------
 
@@ -1105,7 +1010,7 @@ server <- function(input, output, session) {
 
       # Save CSV files
       person_fit_data() %>%
-        full_join(rval_df(), by = input$respondent_id) %>%
+        full_join(import_values$rval_df(), by = import_values$respondent_id()) %>%
         write.csv(files$person_fit_csv)
       write.csv(item_fit_data(), files$item_fit_csv)
 

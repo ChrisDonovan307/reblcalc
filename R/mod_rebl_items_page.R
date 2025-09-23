@@ -1,6 +1,5 @@
 # REBL Item Page
 
-
 rebl_items_page_ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns("rebl_items_page"))
