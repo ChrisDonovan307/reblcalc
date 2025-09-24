@@ -41,25 +41,7 @@ options(
   spinner.hide.ui = TRUE
 )
 
-# rebl_items <- readRDS('data/rebl_items.rds')
-# rebl_text <- readRDS('data/rebl_text.rds')
-# baseline_model <- readRDS('data/baseline_model.rds')
-data(rebl_items)
-data(rebl_text)
-
-# source('R/get_person_fit.R')
-# source('R/get_item_fit.R')
-# source('R/plotPImap2.R')
-# source('R/link_tests.R')
-# source('R/read_erm.R')
-# source('R/test_uni_pcar.R')
-
-# Load modules
-source('R/mod_landing_page.R')
-source('R/mod_rebl_items_page.R')
-source('R/mod_skim_page.R')
-source('R/mod_import.R')
-
+devtools::load_all()
 
 
 # UI ----------------------------------------------------------------------
@@ -83,9 +65,8 @@ ui <- fluidPage(
     ))
   ),
 
-
-
   sidebarLayout(
+
 
     ## Sidebar Panel -----------------------------------------------------------
 
@@ -130,7 +111,8 @@ ui <- fluidPage(
         ),
         tabPanel('REBL Items', withSpinner(rebl_items_page_ui('rebl_items_page'))),
         tabPanel('Skim', withSpinner(skim_page_ui('skim_page'))),
-        tabPanel('Imputation', withSpinner(tableOutput('imp_page'))),
+        # tabPanel('Imputation', withSpinner(tableOutput('imp_page'))),
+        tabPanel('Imputation', withSpinner(imputation_page_ui('imputation_page'))),
         tabPanel('Item Map', withSpinner(uiOutput('item_map_page'))),
         tabPanel('ICC Plot', withSpinner(uiOutput('icc_page'))),
         tabPanel('PI Map', withSpinner(uiOutput('pi_map_page'))),
@@ -154,19 +136,19 @@ server <- function(input, output, session) {
   analysis_state <- reactiveVal(FALSE)
 
 
-  # Servers -----------------------------------------------------------------
+  # Server calls ------------------------------------------------------------
 
-  # Import module server
-  import_values <- import_server('import', rebl_items)
-
-  # Landing page turns into model tests if analysis state is true
+  import_values <- import_server('import')
   landing_page_server('landing_page', analysis_state)
   rebl_items_page_server('rebl_items_page')
   skim_page_server('skim_page', import_values$rval_df)
-
-
-  # Import File ------------------------------------------------------------
-  # Import functionality now handled by import module
+  imp_values <- imputation_page_server(
+    id = 'imputation_page',
+    import_values = import_values,
+    analysis_state = analysis_state,
+    impute_option = reactive(input$impute_option),
+    run_analysis = reactive(input$run_analysis)
+  )
 
 
   # User Options ------------------------------------------------------------
@@ -276,117 +258,6 @@ server <- function(input, output, session) {
   }, ignoreNULL = FALSE)
 
 
-  # Imputation --------------------------------------------------------------
-
-  # Impute data if option is selected
-  rval_imp_out <- eventReactive(input$run_analysis, {
-
-    # First reorder the DF to put respondent id first, then rebl items in order
-    df <- import_values$rval_df() %>%
-      select(import_values$respondent_id(), all_of(rebl_items))
-
-    if (input$impute_option == FALSE) {
-      return(df)
-    } else {
-      if (sum(is.na(select(import_values$rval_df(), all_of(rebl_items)))) == 0) {
-        showModal(modalDialog(
-          title = 'Error',
-          'The "impute missing data" button was checked, but there is no
-          missing data in your dataset. Please remove it before continuing. You
-          may also explore your dataset in the "Skim" tab.',
-          easyClose = TRUE
-        ))
-        stop()
-
-      } else {
-
-        showPageSpinner({
-          imp_out <- df %>%
-            select(all_of(rebl_items)) %>%
-            mutate(across(everything(), as.factor)) %>%
-            as.data.frame() %>%
-            missForest(variablewise = TRUE)
-        },
-        type = 6,
-        color = '#2F4F4F',
-        caption = HTML(
-          'Imputing data. Note that this can take a minute<br>
-          if there are lots of missing data.'
-        ))
-
-        return(imp_out)
-      }
-    }
-  })
-
-  rval_df_clean <- eventReactive(input$run_analysis, {
-    if (input$impute_option == FALSE) {
-      rval_imp_out()
-    } else if (input$impute_option == TRUE) {
-      rval_imp_out()$ximp %>%
-        mutate(across(everything(), ~ as.numeric(.) - 1)) %>%
-        bind_cols(import_values$rval_df() %>% select(-all_of(rebl_items)))
-    }
-  })
-
-  # Also save imputation error stats every time imputation happens
-  rval_imp_oob <- eventReactive(input$run_analysis, {
-    req(rval_imp_out())
-    rval_imp_out()$OOB
-  })
-
-  # tabPanel for imputation
-  output$imp_page <- renderUI({
-    req(rval_model())
-    tagList(
-      fluidRow(
-        column(12, uiOutput('imp_title')),
-        column(12, uiOutput('imp_exp')),
-        column(12, tableOutput('oob_print')),
-        column(12, uiOutput('no_imp'))
-      )
-    )
-  })
-
-  output$imp_title <- renderUI({
-    HTML(
-      '<h3 style="color: #2F4F4F; font-weight: bold;">Imputation</h3>'
-    )
-  })
-
-  output$no_imp <- renderUI({
-    req(rval_model)
-    if (input$impute_option == FALSE && analysis_state() == TRUE)
-      HTML(
-        '<p>No imputation performed.</p>'
-      )
-  })
-
-  # Add imputation output, only if performed though
-  output$imp_exp <- renderText({
-    if (input$impute_option == TRUE && analysis_state() == TRUE) {
-      HTML(
-        '<p>Out-of-bag (OOB) errors are an estimate of the imputation
-        error from the missForest algorithm. For categorical data, they
-        represent the proportion of falsely classified values (PFC). A value of
-        0 would represent perfect prediction.</p>'
-      )
-    }
-  })
-
-  output$oob_print <- renderTable({
-    if (input$impute_option == TRUE && analysis_state() == TRUE) {
-      df <- data.frame(
-        names(rval_imp_out()$ximp),
-        round(rval_imp_oob(), 3)
-      ) %>%
-        setNames(c('REBL Item', 'PFC')) %>%
-        arrange(PFC)
-      df
-    }
-  })
-
-
   # Run Rasch Model ---------------------------------------------------------
 
   # Show run analysis button only once file is input
@@ -407,7 +278,7 @@ server <- function(input, output, session) {
 
   # Run Rasch model
   rval_model <- eventReactive(input$run_analysis, {
-    req(rval_df_clean())
+    req(imp_values$rval_df_clean())
 
     # Check for unique respondent ID column
     if (any(duplicated(import_values$rval_df()[[import_values$respondent_id()]]))) {
@@ -419,7 +290,7 @@ server <- function(input, output, session) {
 
       # Run Rasch model
       showPageSpinner({
-        rval_df_clean() %>%
+        imp_values$rval_df_clean() %>%
           select(all_of(rebl_items)) %>%
           select(order(colnames(.))) %>%
           RM()
@@ -594,7 +465,7 @@ server <- function(input, output, session) {
 
   person_fit_data <- reactive({
     out <- rval_model() %>%
-      get_person_fit(rval_df_clean(), import_values$respondent_id())
+      get_person_fit(imp_values$rval_df_clean(), import_values$respondent_id())
 
     if (exists('rval_rescaled_scores') && input$link_option == TRUE) {
       out <- out %>%
@@ -658,7 +529,7 @@ server <- function(input, output, session) {
 
   item_fit_data <- reactive({
     rval_model() %>%
-      get_item_fit(rval_df_clean(), rebl_items)
+      get_item_fit(imp_values$rval_df_clean(), rebl_items)
   })
 
   output$item_fit_page <- renderUI({

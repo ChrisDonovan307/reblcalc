@@ -17,7 +17,7 @@ import_ui <- function(id) {
 }
 
 # Server logic for file import
-import_server <- function(id, rebl_items) {
+import_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

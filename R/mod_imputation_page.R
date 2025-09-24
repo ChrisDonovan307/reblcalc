@@ -8,23 +8,21 @@ imputation_page_ui <- function(id) {
 
 # Server logic for imputation page
 imputation_page_server <- function(id,
-                                   rebl_items,
                                    import_values,
                                    analysis_state,
                                    impute_option,
-                                   run_analysis_trigger) {
+                                   run_analysis) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Impute data if option is selected
-    rval_imp_out <- eventReactive(run_analysis_trigger(), {
+    rval_imp_out <- eventReactive(run_analysis(), {
 
       # First reorder the DF to put respondent id first, then rebl items in order
-      browser()
       uid <- import_values$respondent_id()
       df <- import_values$rval_df() %>%
-        select(uid)
-        # select(id, all_of(rebl_items))
+        # select(uid)
+        select(uid, all_of(rebl_items))
 
       if (impute_option() == FALSE) {
         return(df)
@@ -60,7 +58,7 @@ imputation_page_server <- function(id,
       }
     })
 
-    rval_df_clean <- eventReactive(run_analysis_trigger(), {
+    rval_df_clean <- eventReactive(run_analysis(), {
       if (impute_option() == FALSE) {
         rval_imp_out()
       } else if (impute_option() == TRUE) {
@@ -71,7 +69,7 @@ imputation_page_server <- function(id,
     })
 
     # Also save imputation error stats every time imputation happens
-    rval_imp_oob <- eventReactive(run_analysis_trigger(), {
+    rval_imp_oob <- eventReactive(run_analysis(), {
       req(rval_imp_out())
       rval_imp_out()$OOB
     })
