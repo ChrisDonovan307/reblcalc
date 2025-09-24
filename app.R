@@ -157,7 +157,7 @@ server <- function(input, output, session) {
   )
 
 
-  # User Options ------------------------------------------------------------
+  # Buttons ---------------------------------------------------------------
 
   output$impute_button <- renderUI({
     req(import_values$file_input())
@@ -210,6 +210,12 @@ server <- function(input, output, session) {
          border-width: 2px"
     )
   })
+
+  # Reset analysis state to FALSE if any of the buttons are pushed
+  observeEvent(input$impute_option | input$link_option, {
+    analysis_state(FALSE)
+  }, ignoreNULL = FALSE)
+
 
   # output$model_button <- renderUI({
   #   req(input$file)
@@ -274,56 +280,37 @@ server <- function(input, output, session) {
   #
   # })
 
-  # Reset analysis state to FALSE if any of the buttons are pushed
-  observeEvent(input$impute_option | input$link_option, {
-    analysis_state(FALSE)
-  }, ignoreNULL = FALSE)
 
-
-  ## GoF, LR, PCAR -----------------------------------------------------------
+  # GoF, LR, PCAR -----------------------------------------------------------
 
 
   # Putting all the model tests together into one output
 
-  # First make objects outside of renderUI function. Use these to save later
+  # Goodness of fit tests
   gof_obj <- reactive({
     req(rval_model())
-    showPageSpinner(
-      rval_model() %>%
-        person.parameter() %>%
-        gofIRT(),
-      type = 6,
-      color = '#2F4F4F',
-      caption = HTML(
-        'Calculating Goodness of Fit...'
-      )
-    )
+    rval_model() %>%
+      person.parameter() %>%
+      gofIRT() %>%
+      spinner_wrapper(HTML('Calculating Goodness of Fit...'))
   })
 
+  # LR test of invariance
   lr_obj <- reactive({
     req(rval_model())
     showPageSpinner(
       rval_model() %>%
-        LRtest(),
-      type = 6,
-      color = '#2F4F4F',
-      caption = HTML(
-        'Calculating test of invariance...'
-      )
+        LRtest() %>%
+        spinner_wrapper(HTML('Calculating test of invariance...'))
     )
   })
 
+  # PCAR test of unidimensionality
   pcar_obj <- reactive({
     req(rval_model())
-    showPageSpinner(
-      rval_model() %>%
-        test_uni_pcar(),
-      type = 6,
-      color = '#2F4F4F',
-      caption = HTML(
-        'Calculating test of unidimensionality...'
-      )
-    )
+    rval_model() %>%
+      test_uni_pcar() %>%
+      spinner_wrapper(HTML('Calculating test of unidimensionality...'))
   })
 
   # Now put all UI outputs together
@@ -353,6 +340,7 @@ server <- function(input, output, session) {
         analysis.</p>'
     )
   })
+
   output$gof_title <- renderUI({
     HTML(
       '<h3 style="color: #2F4F4F; font-weight: bold;">Goodness of Fit</h3>'
@@ -414,7 +402,7 @@ server <- function(input, output, session) {
   })
 
 
-  ## Test Linking ------------------------------------------------------------
+  # Test Linking ------------------------------------------------------------
 
   # If link_option == TRUE, get new rescaled thetas and add them to the outputs
   # Use these for graphs and such also
@@ -436,7 +424,7 @@ server <- function(input, output, session) {
   })
 
 
-  ## Person Fit --------------------------------------------------------------
+  # Person Fit --------------------------------------------------------------
 
   person_fit_data <- reactive({
     out <- rval_model() %>%
@@ -500,7 +488,7 @@ server <- function(input, output, session) {
   })
 
 
-  ## Item fit ----------------------------------------------------------------
+  # Item fit ----------------------------------------------------------------
 
   item_fit_data <- reactive({
     rval_model() %>%
