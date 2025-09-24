@@ -149,6 +149,12 @@ server <- function(input, output, session) {
     impute_option = reactive(input$impute_option),
     run_analysis = reactive(input$run_analysis)
   )
+  rval_model <- rasch_server(
+    'rasch',
+    run_analysis = reactive(input$run_analysis),
+    imp_values,
+    import_values
+  )
 
 
   # User Options ------------------------------------------------------------
@@ -186,6 +192,22 @@ server <- function(input, output, session) {
       inputId = "pcar_option",
       label = "PCAR test of unidimensionality",
       value = TRUE
+    )
+  })
+
+  # Show run analysis button only once file is input
+  output$analysis_button <- renderUI({
+    req(import_values$file_input())
+    actionButton(
+      'run_analysis',
+      'Run Analysis',
+      width = '100%',
+      style =
+        "color: #fff;
+         background-color: #243f3f;
+         border-color: #243f3f;
+         border-radius: 10px;
+         border-width: 2px"
     )
   })
 
@@ -256,53 +278,6 @@ server <- function(input, output, session) {
   observeEvent(input$impute_option | input$link_option, {
     analysis_state(FALSE)
   }, ignoreNULL = FALSE)
-
-
-  # Run Rasch Model ---------------------------------------------------------
-
-  # Show run analysis button only once file is input
-  output$analysis_button <- renderUI({
-    req(import_values$file_input())
-    actionButton(
-      'run_analysis',
-      'Run Analysis',
-      width = '100%',
-      style =
-        "color: #fff;
-         background-color: #243f3f;
-         border-color: #243f3f;
-         border-radius: 10px;
-         border-width: 2px"
-    )
-  })
-
-  # Run Rasch model
-  rval_model <- eventReactive(input$run_analysis, {
-    req(imp_values$rval_df_clean())
-
-    # Check for unique respondent ID column
-    if (any(duplicated(import_values$rval_df()[[import_values$respondent_id()]]))) {
-      stop(
-        'The respondent ID column that you have selected does not uniquely',
-        ' identify respondents. Please choose another column.'
-      )
-    } else {
-
-      # Run Rasch model
-      showPageSpinner({
-        imp_values$rval_df_clean() %>%
-          select(all_of(rebl_items)) %>%
-          select(order(colnames(.))) %>%
-          RM()
-      },
-      type = 6,
-      color = '#2F4F4F',
-      caption = HTML(
-        'Running Rasch model. Note that this can take a minute<br>or two if there
-        are lots of missing data.'
-      ))
-    }
-  })
 
 
   ## GoF, LR, PCAR -----------------------------------------------------------
