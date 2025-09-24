@@ -347,7 +347,7 @@ server <- function(input, output, session) {
       )
     )
   })
-0
+
   output$imp_title <- renderUI({
     HTML(
       '<h3 style="color: #2F4F4F; font-weight: bold;">Imputation</h3>'

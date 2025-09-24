@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^REBLcalc\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
