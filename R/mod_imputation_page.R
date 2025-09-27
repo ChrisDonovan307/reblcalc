@@ -15,6 +15,7 @@ imputation_page_server <- function(id,
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    # Impute ----
     # Impute data if option is selected
     rval_imp_out <- eventReactive(run_analysis(), {
 
@@ -40,10 +41,13 @@ imputation_page_server <- function(id,
 
           showPageSpinner({
             imp_out <- df %>%
-              select(all_of(rebl_items)) %>%
-              mutate(across(everything(), as.factor)) %>%
+              dplyr::select(all_of(rebl_items)) %>%
+              dplyr::mutate(across(everything(), as.factor)) %>%
               as.data.frame() %>%
-              missForest(variablewise = TRUE)
+              missRanger(
+                seed = 42,
+                data_only = FALSE
+              )
           },
           type = 6,
           color = '#2F4F4F',
@@ -57,30 +61,37 @@ imputation_page_server <- function(id,
       }
     })
 
+    # Clean DF ----
+    # If imputed, bind imputed df back to original that has respondent id
     rval_df_clean <- eventReactive(run_analysis(), {
       if (impute_option() == FALSE) {
         rval_imp_out()
       } else if (impute_option() == TRUE) {
-        rval_imp_out()$ximp %>%
+        rval_imp_out()$data %>%
           mutate(across(everything(), ~ as.numeric(.) - 1)) %>%
           bind_cols(import_values$rval_df() %>% select(-all_of(rebl_items)))
       }
     })
 
+    # OOB ----
     # Also save imputation error stats every time imputation happens
     rval_imp_oob <- eventReactive(run_analysis(), {
       req(rval_imp_out())
-      rval_imp_out()$OOB
+      rval_imp_out()$pred_errors[rval_imp_out()$best_iter, ] %>%
+        as.data.frame() %>%
+        tibble::rownames_to_column() %>%
+        setNames(c('rebl_item', 'oob')) %>%
+        mutate(oob = round(oob, 3))
     })
 
-    # tabPanel for imputation
+    # Page Layout ----
     output$imputation_page <- renderUI({
       req(analysis_state()) # Only show when analysis has been run
       tagList(
         fluidRow(
           column(12, uiOutput(ns('imp_title'))),
           column(12, uiOutput(ns('imp_exp'))),
-          column(12, tableOutput(ns('oob_print'))),
+          column(12, reactableOutput(ns('oob_table'))),
           column(12, uiOutput(ns('no_imp')))
         )
       )
@@ -111,16 +122,17 @@ imputation_page_server <- function(id,
       }
     })
 
-    output$oob_print <- renderTable({
+    output$oob_table <- renderReactable({
       if (impute_option() == TRUE && analysis_state() == TRUE) {
-        req(rval_imp_out())
-        df <- data.frame(
-          names(rval_imp_out()$ximp),
-          round(rval_imp_oob(), 3)
-        ) %>%
-          setNames(c('REBL Item', 'PFC')) %>%
-          arrange(PFC)
-        df
+        req(rval_imp_oob())
+        rval_imp_oob() %>%
+          arrange(oob) %>%
+          get_reactable(
+            fullWidth = FALSE,
+            columns = list(
+              oob = colDef(minWidth = 50)
+            )
+          )
       }
     })
 
