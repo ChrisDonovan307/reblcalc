@@ -1,4 +1,4 @@
 run <- function() {
-  source('app.R')
+  shiny::runApp()
 }
 source("renv/activate.R")

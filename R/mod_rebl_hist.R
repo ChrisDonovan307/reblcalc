@@ -10,7 +10,7 @@ rebl_hist_server <- function(id, person_fit_data, rval_model) {
     ns <- session$ns
 
     rval_rebl_hist <- reactive({
-
+      req(person_fit_data())
       person_fit_data() %>%
         ggplot(aes(x = rebl_score)) +
         geom_histogram(
@@ -23,19 +23,20 @@ rebl_hist_server <- function(id, person_fit_data, rval_model) {
           x = 'REBL Score',
           y = 'Count'
         ) +
-        scale_x_continuous(breaks = seq(-5, 3, 1))
-    })
-
-    output$hist_title <- renderText({
-      HTML('<h3 style="color: #2F4F4F; font-weight: bold;">REBL Score Histogram</h3>')
-    })
-
-    output$rebl_hist <- renderPlot({
-      rval_rebl_hist() +
+        scale_x_continuous(breaks = seq(-5, 3, 1)) +
         theme(
           axis.text = element_text(size = 16),
           axis.title = element_text(size = 18)
         )
+    })
+
+    output$rebl_hist_title <- renderText({
+      HTML('<h3 class="body-header-3">REBL Score Histogram</h3>')
+    })
+
+    output$rebl_hist <- renderPlot({
+      req(rval_rebl_hist())
+      rval_rebl_hist()
     })
 
     output$rebl_hist_exp <- renderText({
@@ -51,7 +52,7 @@ rebl_hist_server <- function(id, person_fit_data, rval_model) {
     output$rebl_hist_page <- renderUI({
       req(rval_model())
       tagList(fluidRow(
-        column(12, uiOutput(ns('hist_title'))),
+        column(12, uiOutput(ns('rebl_hist_title'))),
         column(
           12,
           div(
@@ -59,7 +60,7 @@ rebl_hist_server <- function(id, person_fit_data, rval_model) {
             plotOutput(ns('rebl_hist'), width = '750px')
           )
         ),
-        column(12, uiOutput(ns('hist_exp')))
+        column(12, uiOutput(ns('rebl_hist_exp')))
       ))
     })
 

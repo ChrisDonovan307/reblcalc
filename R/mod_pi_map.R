@@ -42,7 +42,7 @@ pi_map_server <- function(id, rval_model) {
 
     # PI Map Title
     output$pi_map_title <- renderText({
-      HTML('<h3 style="color: #2F4F4F; font-weight: bold;">Person Item Map</h3>')
+      HTML('<h3 class="body-header-3">Person Item Map</h3>')
     })
 
     # PI Map image for tab output

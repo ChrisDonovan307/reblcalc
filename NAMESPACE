@@ -2,7 +2,10 @@
 
 export(get_item_fit)
 export(get_person_fit)
+export(get_reactable)
 export(link_tests)
 export(plotPImap2)
 export(read_erm)
 export(test_uni_pcar)
+importFrom(assertthat,assert_that)
+importFrom(reactable,reactable)

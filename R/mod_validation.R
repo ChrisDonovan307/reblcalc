@@ -37,8 +37,8 @@ validation_server <- function(id, rval_model, analysis_state) {
 
     output$model_test_header <- renderUI({
       HTML(
-        '<h2 style="color: #2F4F4F; font-weight: bold;">Results</h2>
-        <p style="font-size: 16px;">Analysis is complete! On this page, you
+        '<h2 class="body-header-2">Results</h2>
+        <p>Analysis is complete! On this page, you
           can find fit statistics, the likelihood-ratio test of invariance, as
           well as a test of unidimensionality using principal components
           analysis.</p>'
@@ -47,7 +47,7 @@ validation_server <- function(id, rval_model, analysis_state) {
 
     output$gof_title <- renderUI({
       HTML(
-        '<h3 style="color: #2F4F4F; font-weight: bold;">Goodness of Fit</h3>'
+        '<h3 class="body-header-3">Goodness of Fit</h3>'
       )
     })
 
@@ -61,8 +61,8 @@ validation_server <- function(id, rval_model, analysis_state) {
         '<p>Here we have a slew of goodness of fit statistics for our Rasch model.
         For details on interpretation, see
         <a href="https://escholarship.org/content/qt1m46j62q/qt1m46j62q.pdf">
-        <b>Mair et al. (2008).</b></a></p>
-        <h3 style="color: #2F4F4F; font-weight: bold;">Invariance</h3>
+        Mair et al. (2008).</a></p>
+        <h3 class="body-header-3">Invariance</h3>
         '
       )
     })
@@ -81,9 +81,9 @@ validation_server <- function(id, rval_model, analysis_state) {
         equality across groups. If the p-value is < 0.05, we reject the null
         hypothesis of measurement invariance. Otherwise, we fail to reject the
         null and retain the null hypothesis of measurement invariance.</p>
-        <h3 style="color: #2F4F4F; font-weight: bold;">Unidimensionality</h3>
+        <h3 class="body-header-3">Unidimensionality</h3>
         <p>Here we test that the scale is measuring a single dimension by running
-        a Principal Components Analysis (PCA).'
+        a Principal Components Analysis (PCA).</p>'
       )
     })
 

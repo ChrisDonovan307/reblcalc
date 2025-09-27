@@ -20,7 +20,8 @@ pacman::p_load(
   shinycssloaders,
   psych,
   skimr,
-  conflicted
+  conflicted,
+  reactable
 )
 
 suppressMessages(
@@ -56,6 +57,7 @@ ui <- fluidPage(
     font_scale = 1
   ),
 
+  includeCSS("www/styles.css"),
   useShinyjs(),
 
   fluidRow(

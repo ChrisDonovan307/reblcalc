@@ -88,7 +88,7 @@ imputation_page_server <- function(id,
 
     output$imp_title <- renderUI({
       HTML(
-        '<h3 style="color: #2F4F4F; font-weight: bold;">Imputation</h3>'
+        '<h3 class="body-header-3">Imputation</h3>'
       )
     })
 

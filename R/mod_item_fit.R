@@ -18,7 +18,7 @@ item_fit_server <- function(id,
     })
 
     output$item_fit_title <- renderUI({
-      HTML('<h3 style="color: #2F4F4F; font-weight: bold;">Item Fit</h3>')
+      HTML('<h3 class="body-header-3">Item Fit</h3>')
     })
 
     output$item_fit_exp <- renderText({
@@ -46,8 +46,9 @@ item_fit_server <- function(id,
       }
     })
 
-    output$item_fit_data <- DT::renderDT({
-      item_fit_data()
+    output$item_fit_data <- renderReactable({
+      req(analysis_state(), item_fit_data())
+      get_reactable(item_fit_data())
     })
 
     output$item_fit <- renderUI({
@@ -56,7 +57,7 @@ item_fit_server <- function(id,
         fluidRow(
           column(12, uiOutput(ns('item_fit_title'))),
           column(12, uiOutput(ns('item_fit_exp'))),
-          column(12, DT::DTOutput(ns('item_fit_data')))
+          column(12, reactable::reactableOutput(ns('item_fit_data')))
         )
       )
     })

@@ -57,7 +57,7 @@ icc_plot_server <- function(id, rval_model) {
 
     output$icc_title <- renderUI({
       HTML(
-      '<h3 style="color: #2F4F4F; font-weight: bold;">Item Characteristic Curves</h3>'
+      '<h3 class="body-header-3">Item Characteristic Curves</h3>'
       )
     })
 

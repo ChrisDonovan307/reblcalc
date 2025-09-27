@@ -2,7 +2,7 @@
 
 person_fit_ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("person_fit"))
+  uiOutput(ns("person_fit_page"))
 }
 
 person_fit_server <- function(id,
@@ -16,10 +16,12 @@ person_fit_server <- function(id,
     ns <- session$ns
 
     person_fit_data <- reactive({
+      req(rval_model())
       out <- rval_model() %>%
         get_person_fit(rval_df_clean(), respondent_id())
 
-      if (!is.null(rval_rescaled_scores()) && link_option() == TRUE) {
+      if (!is.null(rval_rescaled_scores) && link_option() == TRUE) {
+        req(rval_rescaled_scores())
         out <- out %>%
           rename(rebl_unscaled = rebl_score) %>%
           mutate(rebl_score = rval_rescaled_scores()) %>%
@@ -31,8 +33,7 @@ person_fit_server <- function(id,
     output$person_fit_exp <- renderText({
       if (analysis_state()) {
         HTML(
-          '<h3 style="color: #2F4F4F; font-weight: bold;">REBL Scores and Person Fit
-            </h3>
+          '<h3 class="body-header-3">REBL Scores and Person Fit</h3>
           <p>The table below shows your respondent ID, REBL Scores, and a series of
             person fit statistics. If you chose to link and rescale scores, the scaled
             scores will be in the <b>rebl_score</b> field while the raw scores will be
@@ -56,23 +57,22 @@ person_fit_server <- function(id,
             <li><b>Z</b> is the z-score of the test of fit. 0.0 is expected, while
             values over +/-2 are misfitting.</li>
           </ul>
-          <br>
           '
         )
       }
     })
 
-    output$person_fit_table <- DT::renderDT({
-      req(rval_model())
-      person_fit_data()
+    output$person_fit_table <- reactable::renderReactable({
+      req(analysis_state(), person_fit_data())
+      get_reactable(person_fit_data())
     })
 
     # Put outputs together on page
-    output$person_fit <- renderUI({
-      req(rval_model())
+    output$person_fit_page <- renderUI({
+      req(rval_model(), person_fit_data())
       tagList(
         column(12, uiOutput(ns('person_fit_exp'))),
-        column(12, DT::DTOutput(ns('person_fit_table')))
+        column(12, reactable::reactableOutput(ns('person_fit_table')))
       )
     })
 

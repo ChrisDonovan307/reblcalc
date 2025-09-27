@@ -11,7 +11,7 @@ landing_page_server <- function(id, analysis_state) {
     output$landing_page <- renderUI({
       req(!analysis_state())
       HTML(
-        '<h3 style="color: #2F4F4F; font-weight: bold;">Welcome</h3>
+        '<h3 class="body-header-3">Welcome</h3>
         <p>This app is designed to analyze data from an administration of the Repeated Environmental Behavior
           Latent (REBL) Scale, a tool for measuring preferences for pro-environmental
           behaviors (PEB). The scale consists of 24 questions with binary (yes/no)
@@ -62,7 +62,7 @@ landing_page_server <- function(id, analysis_state) {
           .rds files. If any of the parameters in the side panel are changed
           after running an analysis, the info tab will reset to the welcome
           page.</p>
-        <h3 style="color: #2F4F4F; font-weight: bold;">Development</h3>
+        <h3 class="body-header-3">Development</h3>
         <p>The REBL Score Calculator app is currently limited to CML models from
           the eRm package and test equating using the full set of all REBL
           items. Plans are to update the app with two-parameter and

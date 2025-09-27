@@ -16,6 +16,7 @@ Imports:
     plink,
     psych,
     purrr,
+    reactable,
     stringr,
     tibble
 Depends: 

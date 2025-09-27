@@ -38,7 +38,7 @@ item_map_server <- function(id, rval_model) {
     })
 
     output$item_map_title <- renderUI({
-      HTML('<h3 style="color: #2F4F4F; font-weight: bold;">Item Map</h3>')
+      HTML('<h3 class="body-header-3">Item Map</h3>')
     })
 
     output$item_map <- renderImage({

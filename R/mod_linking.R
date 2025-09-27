@@ -20,6 +20,7 @@ linking_server <- function(id, button_values, rval_model) {
     # Pull rescaled scores for new model only
     rval_rescaled_scores <- reactive({
       req(rval_plink())
+      browser()
       plink::link.ability(rval_plink())[[2]] %>%
         round(3)
     })
