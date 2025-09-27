@@ -4,7 +4,6 @@
 import_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    # Upload data
     fileInput(
       ns('file'),
       'Upload .csv or .xlsx file',

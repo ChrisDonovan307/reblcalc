@@ -21,8 +21,7 @@ imputation_page_server <- function(id,
       # First reorder the DF to put respondent id first, then rebl items in order
       uid <- import_values$respondent_id()
       df <- import_values$rval_df() %>%
-        # select(uid)
-        select(uid, all_of(rebl_items))
+        select(all_of(c(uid, rebl_items)))
 
       if (impute_option() == FALSE) {
         return(df)

@@ -146,7 +146,7 @@ plotPImap2 <- function (object,
   if (is.null(xrange))
     xrange <- range(c(tr, theta), na.rm = T)
   nf <- layout(matrix(c(2, 1), 2, 1, byrow = TRUE), heights = c(1, 3), T)
-  
+
   # mar1 -----
   par(mar = c(margins))
   plot(
@@ -233,7 +233,7 @@ plotPImap2 <- function (object,
       padj = 0.7,
       las = 2
     )
-  
+
   # mar2 -----
   par(mar = c(0, margins[2], 3, margins[4]))
   plot(
