@@ -31,12 +31,6 @@ add_missing <- function(df, id_col = 1, prop = 0.1) {
 
 example_mis10 <- add_missing(example, id_col = "respondent_id", prop = 0.1)
 
-# Add some 1s to 594
-example_mis10$foodMeat[example_mis10$respondent_id == '594'] <- 1
-# example_mis10$foodMeat[example_mis10$foodOatMilk == '594'] <- 1
-# example_mis10 <- example_mis10[-594, ]
-# example_mis10 <- example_mis10[1:500, ]
-
 skimr::skim(example_mis10)
 
 readr::write_csv(example_mis10, 'dev/example_mis10.csv')

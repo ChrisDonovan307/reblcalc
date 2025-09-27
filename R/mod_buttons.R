@@ -3,8 +3,13 @@ buttons_ui <- function(id) {
   ns <- NS(id)
   tagList(
     import_ui(ns('import')),
-    uiOutput(ns('impute_button')),
-    uiOutput(ns('link_button')),
+    div(
+      # style = 'padding: 0px 10px 0px 10px;',
+      class = 'button-box',
+      HTML('<b>Analysis Options</b>'),
+      uiOutput(ns('impute_button')),
+      uiOutput(ns('link_button')),
+    ),
     uiOutput(ns('analysis_button'))
   )
 }
@@ -16,7 +21,7 @@ buttons_server <- function(id) {
     import_values <- import_server('import')
 
     output$impute_button <- renderUI({
-      req(import_values$file_input())
+      # req(import_values$file_input() | import_values$data_source() == 'example')
       awesomeCheckbox(
         inputId = ns("impute_option"),
         label = "Impute missing data",
@@ -25,7 +30,6 @@ buttons_server <- function(id) {
     })
 
     output$link_button <- renderUI({
-      req(import_values$file_input())
       awesomeCheckbox(
         inputId = ns("link_option"),
         label = "Link and rescale scores",
@@ -34,7 +38,7 @@ buttons_server <- function(id) {
     })
 
     output$analysis_button <- renderUI({
-      req(import_values$file_input())
+      req(import_values$rval_df())
       actionButton(
         ns('run_analysis'),
         'Run Analysis',

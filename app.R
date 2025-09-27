@@ -9,6 +9,7 @@ pacman::p_load(
   shinyWidgets,
   shinythemes,
   readr,
+  readxl,
   ggplot2,
   tibble,
   purrr,
@@ -60,6 +61,7 @@ ui <- fluidPage(
   includeCSS("www/styles.css"),
   useShinyjs(),
 
+  ## Header image ----
   fluidRow(
     column(12, div(
       style = "text-align: center; padding: 4px;",
@@ -71,13 +73,8 @@ ui <- fluidPage(
 
     ## Sidebar panel -----------------------------------------------------------
     sidebarPanel(
-      div(
-        style = "text-align: center;",
-        h1(
-          "REBL Score Calculator",
-          style = "color: #2f4f4f; font-weight: bold;"
-        )
-      ),
+      width = 3,
+      HTML("<h2 class='body-header-1'>REBL Score Calculator</h2>"),
       buttons_ui('buttons'),
       download_ui('download')
     ),
@@ -86,6 +83,7 @@ ui <- fluidPage(
     ## Main Panel --------------------------------------------------------------
 
     mainPanel(
+      width = 9,
 
       tabsetPanel(
         id = 'tabset',

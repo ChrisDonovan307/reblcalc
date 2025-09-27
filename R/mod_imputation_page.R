@@ -1,12 +1,13 @@
 # Imputation Module for REBL Score Calculator
 
-# UI for imputation page
+# TODO: Remove some of the reactable titles and explanations, just render them
+# straight into page layout.
+
 imputation_page_ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns("imputation_page"))
 }
 
-# Server logic for imputation page
 imputation_page_server <- function(id,
                                    import_values,
                                    analysis_state,

@@ -1,5 +1,12 @@
 /* Content Area Styles - Only applies to main panel content, not navigation */
 
+.body-header-1 {
+  color: #2F4F4F !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  /*font-size: 24px !important;*/
+}
+
 .body-header-2 {
   color: #2F4F4F !important;
   font-weight: bold !important;
@@ -16,6 +23,18 @@
   color: #2F4F4F !important;
   font-weight: bold !important;
   /*font-size: 20px !important;*/
+}
+
+.button-box {
+  border: 1.5px solid #2F4F4F;
+  border-radius: 12px;
+  padding: 10px 10px 10px 10px; /* insides */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  margin: 0 auto 10px auto; /* outsides: top side bottom side */
+  width: 100%;
 }
 
 /*
