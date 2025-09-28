@@ -2,13 +2,12 @@ box::use(
   shiny,
   readr[read_csv],
   readxl[read_excel],
-  dplyr[mutate, across, all_of, select],
+  dplyr[mutate, across, all_of, select, `%>%`],
   tools[file_ext]
 )
 
 # Load REBL items data
 load('app/data/rebl_items.rda')
-
 
 #' @export
 ui <- function(id) {
@@ -28,7 +27,6 @@ ui <- function(id) {
         ),
         selected = 'upload',
         width = '100%'
-        # inline = TRUE
       ),
 
       # Conditional UI for file upload
@@ -74,18 +72,20 @@ server <- function(id) {
     # Import File reactive - handles both uploaded files and example data
     rval_df <- shiny$reactive({
 
+      load('app/data/rebl_items.rda')
+      load('app/data/example.rda')
+
       if (input$data_source == 'example') {
         # Load example data
-        load('app/data/example.rda')
         df <- example
       } else {
         # Make sure file is uploaded for upload option
         shiny$req(input$file)
 
         # Read data frame from uploaded file
-        if (tools::file_ext(input$file$name) == "csv") {
+        if (file_ext(input$file$name) == "csv") {
           df <- read_csv(input$file$datapath)
-        } else if (tools::file_ext(input$file$name) %in% c("xlsx", "xls")) {
+        } else if (file_ext(input$file$name) %in% c("xlsx", "xls")) {
           df <- read_excel(input$file$datapath)
         } else {
           stop("Unsupported file format.")
@@ -138,12 +138,14 @@ server <- function(id) {
         }
       }
 
+      print('import.R: made rval_df()')
       return(df)
     })
 
     # Get column names to send back to UI to choose respondent ID
     output$dropdown_columns <- shiny$renderUI({
       shiny$req(rval_df())
+      print('import.R: starting dropdown_columns')
       column_names <- colnames(rval_df())
       shiny$div(
         class = 'button-box',

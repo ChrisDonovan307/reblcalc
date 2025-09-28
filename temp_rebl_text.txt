@@ -1,0 +1,44 @@
+
+R version 4.5.1 (2025-06-13 ucrt) -- "Great Square Root"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+- Project '~/Documents/git_repos/REBLcalc' loaded. [renv 1.1.5]
+> load('app/data/rebl_text.rda'); cat('rebl_text <- '); dput(rebl_text)
+rebl_text <- structure(list(`REBL Item` = c("foodLocal", "foodLunchNoMeat", 
+"foodMeatr", "foodOatMilk", "foodTofu", "foodVegan", "homeClothesCold", 
+"homeClothesHang", "homeLightsOff", "packCarriedUtensils", "packCompost", 
+"packContainerToRestaurant", "packPickedUpLitter", "packPullRecycleFromTrash", 
+"packRags", "packReusableMug", "packReusedPaperPlasticBags", 
+"purchBuyNothing", "socialDocumentary", "socialGroup", "socialRead", 
+"socialSupportive", "waterShowerStop", "waterTeethStop"), `In the last week, have you...` = c("...purchased locally produced food?", 
+"...eaten at least one lunch without meat?", "...eaten any meat or seafood?", 
+"...consumed oat milk?", "...consumed tofu or meat-substitutes?", 
+"...eaten a fully vegan diet?", "...used the cold water setting to wash your clothes?", 
+"...hung clean clothes to dry?", "...went around your house and turned off lights not in use?", 
+"...carried reusable utensils or straws while you were away from home?", 
+"...composted yard or food waste?", "...brought your own containers for leftovers or takeout to a restaurant?", 
+"...picked up litter?", "...pulled something recyclable out of a trash can even though it was not yours?", 
+"...used reusable washcloths or rags for household cleaning?", 
+"...used a reusable coffee/tea travel thermos?", "...reused plastic or paper bags?", 
+"...browsed or participated in a buy-nothing group?", "...watched a nature documentary?", 
+"...participated in a community group or communicated with others about environmental issues facing your community?", 
+"...read about wildlife, nature, or environmental issues?", "...posted any information, articles, or content that are supportive of policies or practices aimed at protecting the environment or promoting sustainability?", 
+"...turned off the water in the middle of a shower (e.g. while soaping up, shaving, etc.)?", 
+"...turned off the water while brushing your teeth?")), row.names = c(NA, 
+-24L), class = c("tbl_df", "tbl", "data.frame"))
+> 

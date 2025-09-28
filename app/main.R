@@ -57,7 +57,7 @@ ui <- function(id) {
     shiny$fluidRow(
       shiny$column(12, shiny$div(
         style = "text-align: center; padding: 4px;",
-        shiny$img(src = "forest3.jpg", width = '100%')
+        shiny$img(src = "static/images/forest3.jpg", width = '100%')
       ))
     ),
 
@@ -67,8 +67,8 @@ ui <- function(id) {
       shiny$sidebarPanel(
         width = 3,
         shiny$HTML("<h2 class='body-header-1'>REBL Score Calculator</h2>"),
-        buttons$ui(ns('buttons')),
-        download$ui(ns('download'))
+        buttons$ui('buttons'),
+        download$ui('download')
       ),
 
 
@@ -82,19 +82,19 @@ ui <- function(id) {
           shiny$tabPanel(
             'Info',
             shiny$fluidRow(
-              landing$ui(ns('landing')),
-              validation$ui(ns('validation'))
+              landing$ui('landing'),
+              validation$ui('validation')
             )
           ),
-          shiny$tabPanel('REBL Items', withSpinner(rebl_items$ui(ns('rebl_items')))),
-          shiny$tabPanel('Skim', withSpinner(skim$ui(ns('skim')))),
-          shiny$tabPanel('Imputation', withSpinner(imputation$ui(ns('imputation')))),
-          shiny$tabPanel('Item Map', withSpinner(item_map$ui(ns('item_map')))),
-          shiny$tabPanel('ICC Plot', withSpinner(icc_plot$ui(ns('icc_plot')))),
-          shiny$tabPanel('PI Map', withSpinner(pi_map$ui(ns('pi_map')))),
-          shiny$tabPanel('Histogram', withSpinner(rebl_hist$ui(ns('rebl_hist')))),
-          shiny$tabPanel('Person Fit', withSpinner(person_fit$ui(ns('person_fit')))),
-          shiny$tabPanel('Item Fit', withSpinner(item_fit$ui(ns('item_fit'))))
+          shiny$tabPanel('REBL Items', withSpinner(rebl_items$ui('rebl_items'))),
+          shiny$tabPanel('Skim', withSpinner(skim$ui('skim'))),
+          shiny$tabPanel('Imputation', withSpinner(imputation$ui('imputation'))),
+          shiny$tabPanel('Item Map', withSpinner(item_map$ui('item_map'))),
+          shiny$tabPanel('ICC Plot', withSpinner(icc_plot$ui('icc_plot'))),
+          shiny$tabPanel('PI Map', withSpinner(pi_map$ui('pi_map'))),
+          shiny$tabPanel('Histogram', withSpinner(rebl_hist$ui('rebl_hist'))),
+          shiny$tabPanel('Person Fit', withSpinner(person_fit$ui('person_fit'))),
+          shiny$tabPanel('Item Fit', withSpinner(item_fit$ui('item_fit')))
         )
       )
     )
@@ -204,5 +204,3 @@ server <- function(input, output, session) {
   )
 
 }
-
-# shiny$shinyApp(ui = ui, server = server)

@@ -4,11 +4,13 @@ box::use(
 
 # Landing Page
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns("landing"))
 }
 
+#' @export
 server <- function(id, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
 

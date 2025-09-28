@@ -6,11 +6,13 @@ box::use(
 
 # Mod Item Map
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns('item_map'))
 }
 
+#' @export
 server <- function(id, rval_model) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns

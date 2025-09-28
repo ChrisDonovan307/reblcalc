@@ -1,3 +1,8 @@
+box::use(
+  assertthat[assert_that],
+  reactable[reactable],
+)
+
 #' Create a customized reactable table
 #'
 #' This function creates a reactable table with predefined styling and
@@ -72,7 +77,7 @@
 #' )
 #' }
 #'
-#' @export
+
 get_reactable <- function(df,
                           sortable = TRUE,
                           resizable = TRUE,

@@ -1,27 +1,30 @@
 box::use(
   shiny,
-  dplyr[select, all_of, mutate, across, bind_cols, arrange],
+  dplyr[select, all_of, mutate, across, bind_cols, arrange, `%>%`],
   shinycssloaders[showPageSpinner],
   missRanger[missRanger],
   tibble[rownames_to_column],
-  reactable[renderReactable, reactableOutput]
+  reactable[renderReactable, colDef, reactableOutput],
+  stats[setNames],
 )
 
-# Functions from R/ directory should be available globally in Rhino
+box::use(
+  app/logic/get_reactable[get_reactable]
+)
 
 # Load REBL items data
 load('app/data/rebl_items.rda')
 
-# Imputation Module for REBL Score Calculator
-
 # TODO: Remove some of the reactable titles and explanations, just render them
 # straight into page layout.
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns("imputation_page"))
 }
 
+#' @export
 server <- function(id,
                    import_values,
                    analysis_state,
@@ -139,7 +142,7 @@ server <- function(id,
 
     output$oob_table <- renderReactable({
       if (impute_option() == TRUE && analysis_state() == TRUE) {
-        req(rval_imp_oob())
+        shiny$req(rval_imp_oob())
         rval_imp_oob() %>%
           arrange(oob) %>%
           get_reactable(

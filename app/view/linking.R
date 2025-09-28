@@ -1,16 +1,23 @@
 box::use(
   shiny,
-  plink[link.ability]
+  plink[link.ability],
+  dplyr[`%>%`]
+)
+
+box::use(
+  app/logic/link_tests[link_tests]
 )
 
 # Load baseline model data
 load('app/data/baseline_model.rda')
 
 # Linking Module
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
 }
 
+#' @export
 server <- function(id, button_values, rval_model) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns

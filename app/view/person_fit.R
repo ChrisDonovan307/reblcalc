@@ -1,16 +1,23 @@
 box::use(
   shiny,
-  dplyr[rename, mutate, select, everything],
+  dplyr[rename, mutate, select, everything, `%>%`],
   reactable[renderReactable, reactableOutput]
+)
+
+box::use(
+  app/logic/get_person_fit[get_person_fit],
+  app/logic/get_reactable[get_reactable],
 )
 
 # Mod Person Fit
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns("person_fit"))
 }
 
+#' @export
 server <- function(id,
                    link_option,
                    respondent_id,

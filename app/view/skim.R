@@ -3,21 +3,28 @@ box::use(
   skimr[skim],
   dplyr[filter, select, mutate, any_of, `%>%`, starts_with],
   reactable[renderReactable, colDef, reactableOutput],
-  stringr[str_remove]
+  stringr[str_remove],
+  stats[setNames]
 )
 
+box::use(
+  app/logic/get_reactable[get_reactable]
+)
+
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns("skim"))
 }
 
+#' @export
 server <- function(id, rval_df) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Skim page ----
-    output$skim_page <- shiny$renderUI({
-      req(rval_df(), rval_skim_df())
+    output$skim <- shiny$renderUI({
+      shiny$req(rval_df(), rval_skim_df())
 
       # Check if there is anything to show
       has_numeric <- any(rval_skim_df()$skim_type == "numeric")

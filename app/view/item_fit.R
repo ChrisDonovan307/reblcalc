@@ -1,6 +1,12 @@
 box::use(
   shiny,
-  reactable[renderReactable, reactableOutput]
+  reactable[renderReactable, reactableOutput],
+  dplyr[`%>%`]
+)
+
+box::use(
+  app/logic/get_item_fit[get_item_fit],
+  app/logic/get_reactable[get_reactable],
 )
 
 # Load REBL items data
@@ -8,11 +14,13 @@ load('app/data/rebl_items.rda')
 
 # Mod Item Fit
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns('item_fit'))
 }
 
+#' @export
 server <- function(id,
                    rval_model,
                    rval_df_clean,

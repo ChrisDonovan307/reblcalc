@@ -3,13 +3,19 @@ box::use(
   grDevices[png, dev.off]
 )
 
+box::use(
+  app/logic/get_pi_map[get_pi_map],
+)
+
 # Mod PI Map
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns('pi_map_page'))
+  shiny$uiOutput(ns('pi_map'))
 }
 
+#' @export
 server <- function(id, rval_model) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -27,7 +33,7 @@ server <- function(id, rval_model) {
         units = 'in',
         res = 100
       )
-      plotPImap2(
+      get_pi_map(
         rval_model(),
         sorted = TRUE,
         main = NA_character_,
@@ -51,7 +57,7 @@ server <- function(id, rval_model) {
     })
 
     # PI Map image for tab output
-    output$pi_map <- shiny$renderImage({
+    output$pi_map_plot <- shiny$renderImage({
       rval_pi_map()
     }, deleteFile = FALSE)
 
@@ -66,14 +72,14 @@ server <- function(id, rval_model) {
       )
     })
 
-    output$pi_map_page <- shiny$renderUI({
+    output$pi_map <- shiny$renderUI({
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(
           shiny$column(12, shiny$uiOutput(ns('pi_map_title'))),
           shiny$div(
             style = "width: 100%; text-align: center;",
-            shiny$plotOutput(ns('pi_map'), width = '80%', height = '100%')
+            shiny$plotOutput(ns('pi_map_plot'), width = '80%', height = '100%')
           ),
           shiny$column(12, shiny$uiOutput(ns('pi_map_exp')))
         )

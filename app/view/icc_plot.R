@@ -6,11 +6,13 @@ box::use(
 
 # ICC Plot Page
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns('icc_plot'))
 }
 
+#' @export
 server <- function(id, rval_model) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns

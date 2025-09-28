@@ -1,7 +1,11 @@
 box::use(
   shiny,
-  dplyr[mutate, row_number],
-  reactable[renderReactable, colDef, reactableOutput]
+  dplyr[mutate, row_number, `%>%`],
+  reactable[renderReactable, colDef, reactableOutput],
+)
+
+box::use(
+  app/logic/get_reactable[get_reactable]
 )
 
 # Load REBL text data
@@ -9,11 +13,13 @@ load('app/data/rebl_text.rda')
 
 # REBL Item Page
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns("rebl_items_page"))
+  shiny$uiOutput(ns("rebl_items"))
 }
 
+#' @export
 server <- function(id) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -33,7 +39,7 @@ server <- function(id) {
     # Table of REBL item table
     output$rebl_items_table <- renderReactable({
       rebl_text %>%
-        dplyr::mutate('#' = row_number(), .before = 1) %>%
+        mutate('#' = row_number(), .before = 1) %>%
         get_reactable(
           searchable = TRUE,
           columns = list(
@@ -45,7 +51,7 @@ server <- function(id) {
     })
 
     # Combine into single page output
-    output$rebl_items_page <- shiny$renderUI({
+    output$rebl_items <- shiny$renderUI({
       shiny$tagList(
         shiny$fluidRow(
           shiny$column(12, shiny$uiOutput(ns('rebl_items_title'))),

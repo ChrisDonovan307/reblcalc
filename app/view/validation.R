@@ -1,15 +1,23 @@
 box::use(
   shiny,
   eRm[person.parameter, gofIRT, LRtest],
-  shinycssloaders[showPageSpinner]
+  shinycssloaders[showPageSpinner],
+  dplyr[`%>%`]
+)
+
+box::use(
+  app/logic/spinner_wrapper[spinner_wrapper],
+  app/logic/test_uni_pcar[test_uni_pcar],
 )
 
 # Model Validation Module
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns("validation"))
 }
 
+#' @export
 server <- function(id, rval_model, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns

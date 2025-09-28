@@ -1,6 +1,6 @@
 box::use(
   shiny,
-  dplyr[select, all_of],
+  dplyr[select, all_of, `%>%`],
   eRm[RM],
   shinycssloaders[showPageSpinner]
 )
@@ -10,10 +10,12 @@ load('app/data/rebl_items.rda')
 
 # Rasch Module
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
 }
 
+#' @export
 server <- function(id,
                          run_analysis,
                          imp_values,

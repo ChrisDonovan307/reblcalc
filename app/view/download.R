@@ -1,15 +1,17 @@
 box::use(
   shiny,
-  dplyr[full_join],
+  dplyr[full_join, `%>%`],
   ggplot2[ggsave],
   zip[zipr]
 )
 
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$uiOutput(ns('download_button'))
 }
 
+#' @export
 server <- function(id,
                    rval_model,
                    person_fit_data,

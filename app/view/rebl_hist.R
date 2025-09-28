@@ -4,13 +4,13 @@ box::use(
   dplyr[`%>%`]
 )
 
-# REBL Histogram Module
-
+#' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns('rebl_hist_page'))
+  shiny$uiOutput(ns('rebl_hist'))
 }
 
+#' @export
 server <- function(id, person_fit_data, rval_model) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -40,7 +40,7 @@ server <- function(id, person_fit_data, rval_model) {
       shiny$HTML('<h3 class="body-header-3">REBL Score Histogram</h3>')
     })
 
-    output$rebl_hist <- shiny$renderPlot({
+    output$rebl_hist_plot <- shiny$renderPlot({
       shiny$req(rval_rebl_hist())
       rval_rebl_hist()
     })
@@ -55,7 +55,7 @@ server <- function(id, person_fit_data, rval_model) {
       )
     })
 
-    output$rebl_hist_page <- shiny$renderUI({
+    output$rebl_hist <- shiny$renderUI({
       shiny$req(rval_model())
       shiny$tagList(shiny$fluidRow(
         shiny$column(12, shiny$uiOutput(ns('rebl_hist_title'))),
@@ -63,7 +63,7 @@ server <- function(id, person_fit_data, rval_model) {
           12,
           shiny$div(
             style = 'display: flex; justify-content: center;',
-            shiny$plotOutput(ns('rebl_hist'), width = '750px')
+            shiny$plotOutput(ns('rebl_hist_plot'), width = '750px')
           )
         ),
         shiny$column(12, shiny$uiOutput(ns('rebl_hist_exp')))
