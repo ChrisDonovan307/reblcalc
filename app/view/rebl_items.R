@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, renderUI, HTML, tagList, fluidRow, column],
+  shiny,
   dplyr[mutate, row_number],
   reactable[renderReactable, colDef, reactableOutput]
 )
@@ -10,17 +10,17 @@ load('app/data/rebl_text.rda')
 # REBL Item Page
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("rebl_items_page"))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns("rebl_items_page"))
 }
 
 server <- function(id) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Title and information
-    output$rebl_items_title <- renderUI({
-      HTML(
+    output$rebl_items_title <- shiny$renderUI({
+      shiny$HTML(
         '<h3 class="body-header-3">REBL Items</h3>
         <p>Below is a list of all 24 REBL Items. They are organized by category
         and include behaviors related to food and drink, home energy use,
@@ -45,11 +45,11 @@ server <- function(id) {
     })
 
     # Combine into single page output
-    output$rebl_items_page <- renderUI({
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('rebl_items_title'))),
-          column(12, reactableOutput(ns('rebl_items_table')))
+    output$rebl_items_page <- shiny$renderUI({
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('rebl_items_title'))),
+          shiny$column(12, reactableOutput(ns('rebl_items_table')))
         )
       )
     })

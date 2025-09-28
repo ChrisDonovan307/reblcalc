@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, reactive, req, renderText, HTML, tagList, fluidRow, column],
+  shiny,
   dplyr[rename, mutate, select, everything],
   reactable[renderReactable, reactableOutput]
 )
@@ -7,8 +7,8 @@ box::use(
 # Mod Person Fit
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("person_fit"))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns("person_fit"))
 }
 
 server <- function(id,
@@ -18,16 +18,16 @@ server <- function(id,
                    rval_model,
                    analysis_state,
                    rval_rescaled_scores) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    person_fit_data <- reactive({
-      req(rval_model())
+    person_fit_data <- shiny$reactive({
+      shiny$req(rval_model())
       out <- rval_model() %>%
         get_person_fit(rval_df_clean(), respondent_id())
 
       if (!is.null(rval_rescaled_scores) && link_option() == TRUE) {
-        req(rval_rescaled_scores())
+        shiny$req(rval_rescaled_scores())
         out <- out %>%
           rename(rebl_unscaled = rebl_score) %>%
           mutate(rebl_score = rval_rescaled_scores()) %>%
@@ -36,9 +36,9 @@ server <- function(id,
       return(out)
     })
 
-    output$person_fit_exp <- renderText({
+    output$person_fit_exp <- shiny$renderText({
       if (analysis_state()) {
-        HTML(
+        shiny$HTML(
           '<h3 class="body-header-3">REBL Scores and Person Fit</h3>
           <p>The table below shows your respondent ID, REBL Scores, and a series of
             person fit statistics. If you chose to link and rescale scores, the scaled
@@ -69,16 +69,16 @@ server <- function(id,
     })
 
     output$person_fit_table <- reactable::renderReactable({
-      req(analysis_state(), person_fit_data())
+      shiny$req(analysis_state(), person_fit_data())
       get_reactable(person_fit_data())
     })
 
     # Put outputs together on page
-    output$person_fit <- renderUI({
-      req(rval_model(), person_fit_data())
-      tagList(
-        column(12, uiOutput(ns('person_fit_exp'))),
-        column(12, reactable::reactableOutput(ns('person_fit_table')))
+    output$person_fit <- shiny$renderUI({
+      shiny$req(rval_model(), person_fit_data())
+      shiny$tagList(
+        shiny$column(12, shiny$uiOutput(ns('person_fit_exp'))),
+        shiny$column(12, reactable::reactableOutput(ns('person_fit_table')))
       )
     })
 

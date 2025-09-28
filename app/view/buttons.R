@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, tagList, div, HTML, uiOutput, moduleServer, renderUI, observeEvent, req, reactiveVal, actionButton, reactive],
+  shiny,
   shinyWidgets[awesomeCheckbox]
 )
 
@@ -9,28 +9,28 @@ box::use(
 
 #' @export
 ui <- function(id) {
-  ns <- NS(id)
-  tagList(
+  ns <- shiny$NS(id)
+  shiny$tagList(
     import$ui(ns('import')),
-    div(
+    shiny$div(
       # style = 'padding: 0px 10px 0px 10px;',
       class = 'button-box',
-      HTML('<b>Analysis Options</b>'),
-      uiOutput(ns('impute_button')),
-      uiOutput(ns('link_button')),
+      shiny$HTML('<b>Analysis Options</b>'),
+      shiny$uiOutput(ns('impute_button')),
+      shiny$uiOutput(ns('link_button')),
     ),
-    uiOutput(ns('analysis_button'))
+    shiny$uiOutput(ns('analysis_button'))
   )
 }
 
 #' @export
 server <- function(id) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     import_values <- import$server('import')
 
-    output$impute_button <- renderUI({
+    output$impute_button <- shiny$renderUI({
       awesomeCheckbox(
         inputId = ns("impute_option"),
         label = "Impute missing data",
@@ -38,7 +38,7 @@ server <- function(id) {
       )
     })
 
-    output$link_button <- renderUI({
+    output$link_button <- shiny$renderUI({
       awesomeCheckbox(
         inputId = ns("link_option"),
         label = "Link and rescale scores",
@@ -46,9 +46,9 @@ server <- function(id) {
       )
     })
 
-    output$analysis_button <- renderUI({
-      req(import_values$rval_df())
-      actionButton(
+    output$analysis_button <- shiny$renderUI({
+      shiny$req(import_values$rval_df())
+      shiny$actionButton(
         ns('run_analysis'),
         'Run Analysis',
         width = '100%',
@@ -64,9 +64,9 @@ server <- function(id) {
     # Return values for main app
     return(list(
       import_values = import_values,
-      impute_option = reactive(input$impute_option),
-      link_option = reactive(input$link_option),
-      run_analysis = reactive(input$run_analysis)
+      impute_option = shiny$reactive(input$impute_option),
+      link_option = shiny$reactive(input$link_option),
+      run_analysis = shiny$reactive(input$run_analysis)
     ))
 
   })

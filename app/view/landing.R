@@ -1,20 +1,20 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, renderUI, req, HTML]
+  shiny
 )
 
 # Landing Page
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("landing"))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns("landing"))
 }
 
 server <- function(id, analysis_state) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
 
-    output$landing <- renderUI({
-      req(!analysis_state())
-      HTML(
+    output$landing <- shiny$renderUI({
+      shiny$req(!analysis_state())
+      shiny$HTML(
         '<h3 class="body-header-3">Welcome</h3>
         <p>This app is designed to analyze data from an administration of the Repeated Environmental Behavior
           Latent (REBL) Scale, a tool for measuring preferences for pro-environmental

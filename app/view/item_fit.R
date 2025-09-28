@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, reactive, renderUI, HTML, renderText],
+  shiny,
   reactable[renderReactable, reactableOutput]
 )
 
@@ -9,29 +9,29 @@ load('app/data/rebl_items.rda')
 # Mod Item Fit
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns('item_fit'))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns('item_fit'))
 }
 
 server <- function(id,
                    rval_model,
                    rval_df_clean,
                    analysis_state) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    item_fit_data <- reactive({
+    item_fit_data <- shiny$reactive({
       rval_model() %>%
         get_item_fit(rval_df_clean(), rebl_items)
     })
 
-    output$item_fit_title <- renderUI({
-      HTML('<h3 class="body-header-3">Item Fit</h3>')
+    output$item_fit_title <- shiny$renderUI({
+      shiny$HTML('<h3 class="body-header-3">Item Fit</h3>')
     })
 
-    output$item_fit_exp <- renderText({
+    output$item_fit_exp <- shiny$renderText({
       if (analysis_state()) {
-        HTML(
+        shiny$HTML(
           '<ul>
             <li><b>prop</b> is the proportion of people who performed the
               pro-environmental behavior in the last week.</li>
@@ -55,17 +55,17 @@ server <- function(id,
     })
 
     output$item_fit_data <- renderReactable({
-      req(analysis_state(), item_fit_data())
+      shiny$req(analysis_state(), item_fit_data())
       get_reactable(item_fit_data())
     })
 
-    output$item_fit <- renderUI({
-      req(rval_model())
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('item_fit_title'))),
-          column(12, uiOutput(ns('item_fit_exp'))),
-          column(12, reactable::reactableOutput(ns('item_fit_data')))
+    output$item_fit <- shiny$renderUI({
+      shiny$req(rval_model())
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('item_fit_title'))),
+          shiny$column(12, shiny$uiOutput(ns('item_fit_exp'))),
+          shiny$column(12, reactable::reactableOutput(ns('item_fit_data')))
         )
       )
     })

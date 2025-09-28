@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, tagList, div, HTML, radioButtons, conditionalPanel, fileInput, uiOutput, moduleServer, reactive, req, renderUI, selectInput, showModal, modalDialog, modalButton],
+  shiny,
   readr[read_csv],
   readxl[read_excel],
   dplyr[mutate, across, all_of, select],
@@ -12,16 +12,16 @@ load('app/data/rebl_items.rda')
 
 #' @export
 ui <- function(id) {
-  ns <- NS(id)
-  tagList(
+  ns <- shiny$NS(id)
+  shiny$tagList(
 
     # Data source selection
-    div(
+    shiny$div(
       class = 'button-box',
 
-      radioButtons(
+      shiny$radioButtons(
         ns('data_source'),
-        label = HTML('<b>Choose data source:</b>'),
+        label = shiny$HTML('<b>Choose data source:</b>'),
         choices = list(
           'Upload your own data' = 'upload',
           'Use example data' = 'example'
@@ -32,26 +32,26 @@ ui <- function(id) {
       ),
 
       # Conditional UI for file upload
-      conditionalPanel(
+      shiny$conditionalPanel(
         condition = "input.data_source == 'upload'",
         ns = ns,
-        div(
+        shiny$div(
           style = 'padding: 0px 10px 0px 10px;',
-          fileInput(
+          shiny$fileInput(
             ns('file'),
-            HTML('<b>Upload .csv or .xlsx file:</b>'),
+            shiny$HTML('<b>Upload .csv or .xlsx file:</b>'),
             accept = c('.csv', '.xlsx', '.xls')
           )
         )
       ),
 
       # Show info about example data when selected
-      conditionalPanel(
+      shiny$conditionalPanel(
         condition = "input.data_source == 'example'",
         ns = ns,
-        div(
+        shiny$div(
           style = 'padding: 0;',
-          HTML(
+          shiny$HTML(
             "<b>Example Dataset:</b> This is a simulated dataset with 500
             responses to the 24 original REBL items. You can analyze it with
             the options provided below to test out the app."
@@ -62,17 +62,17 @@ ui <- function(id) {
     ), # end button-box div
 
     # Select respondent ID column
-    uiOutput(ns('dropdown_columns'))
+    shiny$uiOutput(ns('dropdown_columns'))
   )
 }
 
 #' @export
 server <- function(id) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Import File reactive - handles both uploaded files and example data
-    rval_df <- reactive({
+    rval_df <- shiny$reactive({
 
       if (input$data_source == 'example') {
         # Load example data
@@ -80,7 +80,7 @@ server <- function(id) {
         df <- example
       } else {
         # Make sure file is uploaded for upload option
-        req(input$file)
+        shiny$req(input$file)
 
         # Read data frame from uploaded file
         if (tools::file_ext(input$file$name) == "csv") {
@@ -122,7 +122,7 @@ server <- function(id) {
           is.na() %>%
           sum()
         if (n_miss >= 2000) {
-          showModal(modalDialog(
+          shiny$showModal(shiny$modalDialog(
             title = 'Warning',
             paste0(
               'There are ',
@@ -133,7 +133,7 @@ server <- function(id) {
               your data in the "Skim" tab to see where the missing values are.'
             ),
             easyClose = TRUE,
-            footer = modalButton('OK')
+            footer = shiny$modalButton('OK')
           ))
         }
       }
@@ -142,15 +142,15 @@ server <- function(id) {
     })
 
     # Get column names to send back to UI to choose respondent ID
-    output$dropdown_columns <- renderUI({
-      req(rval_df())
+    output$dropdown_columns <- shiny$renderUI({
+      shiny$req(rval_df())
       column_names <- colnames(rval_df())
-      div(
+      shiny$div(
         class = 'button-box',
-        tagList(
-          selectInput(
+        shiny$tagList(
+          shiny$selectInput(
             ns('respondent_id'),
-            HTML('<b>Select Respondent ID Column</b>'),
+            shiny$HTML('<b>Select Respondent ID Column</b>'),
             choices = column_names
           )
         )
@@ -160,9 +160,9 @@ server <- function(id) {
     # Return reactive values
     return(list(
       rval_df = rval_df,
-      file_input = reactive(input$file),
-      respondent_id = reactive(input$respondent_id),
-      data_source = reactive(input$data_source)
+      file_input = shiny$reactive(input$file),
+      respondent_id = shiny$reactive(input$respondent_id),
+      data_source = shiny$reactive(input$data_source)
     ))
 
   })

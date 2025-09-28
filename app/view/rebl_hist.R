@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, reactive, req, renderText, HTML, renderPlot, tagList, fluidRow, column, div, plotOutput],
+  shiny,
   ggplot2[ggplot, aes, geom_histogram, theme_classic, labs, scale_x_continuous, theme, element_text],
   dplyr[`%>%`]
 )
@@ -7,16 +7,16 @@ box::use(
 # REBL Histogram Module
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns('rebl_hist_page'))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns('rebl_hist_page'))
 }
 
 server <- function(id, person_fit_data, rval_model) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    rval_rebl_hist <- reactive({
-      req(person_fit_data())
+    rval_rebl_hist <- shiny$reactive({
+      shiny$req(person_fit_data())
       person_fit_data() %>%
         ggplot(aes(x = rebl_score)) +
         geom_histogram(
@@ -36,17 +36,17 @@ server <- function(id, person_fit_data, rval_model) {
         )
     })
 
-    output$rebl_hist_title <- renderText({
-      HTML('<h3 class="body-header-3">REBL Score Histogram</h3>')
+    output$rebl_hist_title <- shiny$renderText({
+      shiny$HTML('<h3 class="body-header-3">REBL Score Histogram</h3>')
     })
 
-    output$rebl_hist <- renderPlot({
-      req(rval_rebl_hist())
+    output$rebl_hist <- shiny$renderPlot({
+      shiny$req(rval_rebl_hist())
       rval_rebl_hist()
     })
 
-    output$rebl_hist_exp <- renderText({
-      HTML(
+    output$rebl_hist_exp <- shiny$renderText({
+      shiny$HTML(
         '<p>This histogram shows REBL Scores for your sample. If you chose to
         rescale your scores based on our baseline model, the rescaled scores will
         be shown here. Note that the CML estimation method used in the eRm package
@@ -55,18 +55,18 @@ server <- function(id, person_fit_data, rval_model) {
       )
     })
 
-    output$rebl_hist_page <- renderUI({
-      req(rval_model())
-      tagList(fluidRow(
-        column(12, uiOutput(ns('rebl_hist_title'))),
-        column(
+    output$rebl_hist_page <- shiny$renderUI({
+      shiny$req(rval_model())
+      shiny$tagList(shiny$fluidRow(
+        shiny$column(12, shiny$uiOutput(ns('rebl_hist_title'))),
+        shiny$column(
           12,
-          div(
+          shiny$div(
             style = 'display: flex; justify-content: center;',
-            plotOutput(ns('rebl_hist'), width = '750px')
+            shiny$plotOutput(ns('rebl_hist'), width = '750px')
           )
         ),
-        column(12, uiOutput(ns('rebl_hist_exp')))
+        shiny$column(12, shiny$uiOutput(ns('rebl_hist_exp')))
       ))
     })
 

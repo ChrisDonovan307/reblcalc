@@ -1,48 +1,48 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, reactive, req, renderUI, HTML, tagList, fluidRow, column, renderText],
+  shiny,
   eRm[person.parameter, gofIRT, LRtest],
   shinycssloaders[showPageSpinner]
 )
 
 # Model Validation Module
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("validation"))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns("validation"))
 }
 
 server <- function(id, rval_model, analysis_state) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Goodness of fit tests
-    gof_obj <- reactive({
-      req(rval_model())
+    gof_obj <- shiny$reactive({
+      shiny$req(rval_model())
       rval_model() %>%
         person.parameter() %>%
         gofIRT() %>%
-        spinner_wrapper(HTML('Calculating Goodness of Fit...'))
+        spinner_wrapper(shiny$HTML('Calculating Goodness of Fit...'))
     })
 
     # LR test of invariance
-    lr_obj <- reactive({
-      req(rval_model())
+    lr_obj <- shiny$reactive({
+      shiny$req(rval_model())
       showPageSpinner(
         rval_model() %>%
           LRtest() %>%
-          spinner_wrapper(HTML('Calculating test of invariance...'))
+          spinner_wrapper(shiny$HTML('Calculating test of invariance...'))
       )
     })
 
     # PCAR test of unidimensionality
-    pcar_obj <- reactive({
-      req(rval_model())
+    pcar_obj <- shiny$reactive({
+      shiny$req(rval_model())
       rval_model() %>%
         test_uni_pcar() %>%
-        spinner_wrapper(HTML('Calculating test of unidimensionality...'))
+        spinner_wrapper(shiny$HTML('Calculating test of unidimensionality...'))
     })
 
-    output$model_test_header <- renderUI({
-      HTML(
+    output$model_test_header <- shiny$renderUI({
+      shiny$HTML(
         '<h2 class="body-header-2">Results</h2>
         <p>Analysis is complete! On this page, you
           can find fit statistics, the likelihood-ratio test of invariance, as
@@ -51,19 +51,19 @@ server <- function(id, rval_model, analysis_state) {
       )
     })
 
-    output$gof_title <- renderUI({
-      HTML(
+    output$gof_title <- shiny$renderUI({
+      shiny$HTML(
         '<h3 class="body-header-3">Goodness of Fit</h3>'
       )
     })
 
-    output$gof <- renderPrint({
+    output$gof <- shiny$renderPrint({
         gof_obj() %>%
           summary()
     })
 
-    output$gof_exp_lr_title <- renderUI({
-      HTML(
+    output$gof_exp_lr_title <- shiny$renderUI({
+      shiny$HTML(
         '<p>Here we have a slew of goodness of fit statistics for our Rasch model.
         For details on interpretation, see
         <a href="https://escholarship.org/content/qt1m46j62q/qt1m46j62q.pdf">
@@ -74,13 +74,13 @@ server <- function(id, rval_model, analysis_state) {
     })
 
     # LR Outputs
-    output$lr <- renderPrint({
+    output$lr <- shiny$renderPrint({
       lr_obj()
     })
 
     # LR exp and PCAR title
-    output$lr_exp_pcar_title <- renderUI({
-      HTML(
+    output$lr_exp_pcar_title <- shiny$renderUI({
+      shiny$HTML(
         '<p>The LR test of measurement invariance splits respondents into two
         groups by median score and tests whether there is a significant change
         in likelihood of the model when item parameters are constrained to
@@ -93,17 +93,17 @@ server <- function(id, rval_model, analysis_state) {
       )
     })
 
-    output$pcar_sum <- renderPrint({
+    output$pcar_sum <- shiny$renderPrint({
       pcar_obj() %>%
         summary()
     })
 
-    output$pcar_loadings <- renderPrint({
+    output$pcar_loadings <- shiny$renderPrint({
       pcar_obj()$Vaccounted
     })
 
-    output$pcar_exp <- renderUI({
-      HTML(
+    output$pcar_exp <- shiny$renderUI({
+      shiny$HTML(
         '<p>The top output shows the summary from the PCA model. The bottom output
         shows the loadings of the principal components (SS loadings). If the
         highest SS loading of any component is less than 2.0, thet test shows
@@ -112,20 +112,20 @@ server <- function(id, rval_model, analysis_state) {
     })
 
     # Now put all UI outputs together
-    output$validation <- renderUI({
-      req(analysis_state())
+    output$validation <- shiny$renderUI({
+      shiny$req(analysis_state())
 
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('model_test_header'))),
-          column(12, uiOutput(ns('gof_title'))),
-          column(12, verbatimTextOutput(ns('gof'))),
-          column(12, uiOutput(ns('gof_exp_lr_title'))),
-          column(12, verbatimTextOutput(ns('lr'))),
-          column(12, uiOutput(ns('lr_exp_pcar_title'))),
-          column(12, verbatimTextOutput(ns('pcar_sum'))),
-          column(12, verbatimTextOutput(ns('pcar_loadings'))),
-          column(12, uiOutput(ns('pcar_exp')))
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('model_test_header'))),
+          shiny$column(12, shiny$uiOutput(ns('gof_title'))),
+          shiny$column(12, shiny$verbatimTextOutput(ns('gof'))),
+          shiny$column(12, shiny$uiOutput(ns('gof_exp_lr_title'))),
+          shiny$column(12, shiny$verbatimTextOutput(ns('lr'))),
+          shiny$column(12, shiny$uiOutput(ns('lr_exp_pcar_title'))),
+          shiny$column(12, shiny$verbatimTextOutput(ns('pcar_sum'))),
+          shiny$column(12, shiny$verbatimTextOutput(ns('pcar_loadings'))),
+          shiny$column(12, shiny$uiOutput(ns('pcar_exp')))
         )
       )
     })

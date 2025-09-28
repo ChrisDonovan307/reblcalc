@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, reactive, renderUI, req, tagList, fluidRow, column, div, plotOutput, HTML, renderImage],
+  shiny,
   eRm[plotjointICC],
   grDevices[png, dev.off]
 )
@@ -7,15 +7,15 @@ box::use(
 # ICC Plot Page
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns('icc_plot'))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns('icc_plot'))
 }
 
 server <- function(id, rval_model) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    rval_icc_plot <- reactive({
+    rval_icc_plot <- shiny$reactive({
 
       # A temp file to save the output. It will be deleted after renderImage
       # sends it, because deleteFile=TRUE.
@@ -47,33 +47,33 @@ server <- function(id, rval_model) {
       )
     })
 
-    output$icc_plot <- renderUI({
-      req(rval_model())
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('icc_title'))),
-          div(
+    output$icc_plot <- shiny$renderUI({
+      shiny$req(rval_model())
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('icc_title'))),
+          shiny$div(
             style = "width: 100%; text-align: center;",
-            plotOutput(ns('icc'), width = '80%', height = '100%')
+            shiny$plotOutput(ns('icc'), width = '80%', height = '100%')
           ),
-          column(12, uiOutput(ns('icc_exp')))
+          shiny$column(12, shiny$uiOutput(ns('icc_exp')))
         )
       )
     })
 
-    output$icc_title <- renderUI({
-      HTML(
+    output$icc_title <- shiny$renderUI({
+      shiny$HTML(
       '<h3 class="body-header-3">Item Characteristic Curves</h3>'
       )
     })
 
-    output$icc <- renderImage({
+    output$icc <- shiny$renderImage({
       rval_icc_plot()
     }, deleteFile = FALSE)
 
     # Explanation
-    output$icc_exp <- renderUI({
-      HTML(
+    output$icc_exp <- shiny$renderUI({
+      shiny$HTML(
         'This plot shows the Item Characteristic Curves of all the REBL items.
         A person of a given REBL Score (x-axis) is estimated to have a certain
         probability of performing each PEB (y-axis).

@@ -1,20 +1,9 @@
 box::use(
   shiny,
-  readr,
-  readxl,
-  ggplot2,
-  tibble,
-  purrr,
-  stringr,
-  bslib,
-  shinyjs,
-  zip,
-  missForest,
-  shinycssloaders,
-  psych,
-  skimr,
-  conflicted,
-  reactable
+  bslib[bs_theme],
+  shinyjs[useShinyjs],
+  missRanger[missRanger],
+  shinycssloaders[withSpinner]
 )
 
 box::use(
@@ -54,7 +43,7 @@ ui <- function(id) {
 
   shiny$fluidPage(
 
-    theme = bslib::bs_theme(
+    theme = bs_theme(
       preset = 'lumen',
       info = '#2f4f4f',
       primary = '#2f4f4f',
@@ -62,7 +51,7 @@ ui <- function(id) {
     ),
 
     shiny$includeCSS("app/styles/styles.css"),
-    shinyjs$useShinyjs(),
+    useShinyjs(),
 
     ## Header image ----
     shiny$fluidRow(
@@ -97,15 +86,15 @@ ui <- function(id) {
               validation$ui(ns('validation'))
             )
           ),
-          shiny$tabPanel('REBL Items', shinycssloaders$withSpinner(rebl_items$ui(ns('rebl_items')))),
-          shiny$tabPanel('Skim', shinycssloaders$withSpinner(skim$ui(ns('skim')))),
-          shiny$tabPanel('Imputation', shinycssloaders$withSpinner(imputation$ui(ns('imputation')))),
-          shiny$tabPanel('Item Map', shinycssloaders$withSpinner(item_map$ui(ns('item_map')))),
-          shiny$tabPanel('ICC Plot', shinycssloaders$withSpinner(icc_plot$ui(ns('icc_plot')))),
-          shiny$tabPanel('PI Map', shinycssloaders$withSpinner(pi_map$ui(ns('pi_map')))),
-          shiny$tabPanel('Histogram', shinycssloaders$withSpinner(rebl_hist$ui(ns('rebl_hist')))),
-          shiny$tabPanel('Person Fit', shinycssloaders$withSpinner(person_fit$ui(ns('person_fit')))),
-          shiny$tabPanel('Item Fit', shinycssloaders$withSpinner(item_fit$ui(ns('item_fit'))))
+          shiny$tabPanel('REBL Items', withSpinner(rebl_items$ui(ns('rebl_items')))),
+          shiny$tabPanel('Skim', withSpinner(skim$ui(ns('skim')))),
+          shiny$tabPanel('Imputation', withSpinner(imputation$ui(ns('imputation')))),
+          shiny$tabPanel('Item Map', withSpinner(item_map$ui(ns('item_map')))),
+          shiny$tabPanel('ICC Plot', withSpinner(icc_plot$ui(ns('icc_plot')))),
+          shiny$tabPanel('PI Map', withSpinner(pi_map$ui(ns('pi_map')))),
+          shiny$tabPanel('Histogram', withSpinner(rebl_hist$ui(ns('rebl_hist')))),
+          shiny$tabPanel('Person Fit', withSpinner(person_fit$ui(ns('person_fit')))),
+          shiny$tabPanel('Item Fit', withSpinner(item_fit$ui(ns('item_fit'))))
         )
       )
     )

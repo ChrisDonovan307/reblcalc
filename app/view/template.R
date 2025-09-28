@@ -1,14 +1,14 @@
 box::use(
-  shiny[NS, moduleServer]
+  shiny
 )
 
 # Module Template
 template_ui <- function(id) {
-  ns <- NS(id)
+  ns <- shiny$NS(id)
 }
 
 template_server <- function(id) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
   })
 }

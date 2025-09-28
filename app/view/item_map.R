@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, reactive, renderUI, req, tagList, fluidRow, column, div, HTML, renderImage, plotOutput],
+  shiny,
   eRm[plotPWmap],
   grDevices[png, dev.off]
 )
@@ -7,15 +7,15 @@ box::use(
 # Mod Item Map
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns('item_map'))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns('item_map'))
 }
 
 server <- function(id, rval_model) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    rval_item_map <- reactive({
+    rval_item_map <- shiny$reactive({
 
       # A temp file to save the output. It will be deleted after renderImage
       # sends it, because deleteFile=TRUE.
@@ -43,16 +43,16 @@ server <- function(id, rval_model) {
       list(src = outfile)
     })
 
-    output$item_map_title <- renderUI({
-      HTML('<h3 class="body-header-3">Item Map</h3>')
+    output$item_map_title <- shiny$renderUI({
+      shiny$HTML('<h3 class="body-header-3">Item Map</h3>')
     })
 
-    output$item_map_plot <- renderImage({
+    output$item_map_plot <- shiny$renderImage({
       rval_item_map()
     }, deleteFile = FALSE)
 
-    output$item_map_exp <- renderUI({
-      HTML(
+    output$item_map_exp <- shiny$renderUI({
+      shiny$HTML(
         '<p>The Item Map shows the item difficulties (y-axis) against item fit
         (x-axis). Infit is the information-weighted fit statistic, which weights
         nearby respondents more than those farther away on the latent dimension.
@@ -61,16 +61,16 @@ server <- function(id, rval_model) {
       )
     })
 
-    output$item_map <- renderUI({
-      req(rval_model())
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('item_map_title'))),
-          div(
+    output$item_map <- shiny$renderUI({
+      shiny$req(rval_model())
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('item_map_title'))),
+          shiny$div(
             style = "width: 100%; text-align: center;",
-            plotOutput(ns('item_map_plot'), width = '80%', height = '100%'),
+            shiny$plotOutput(ns('item_map_plot'), width = '80%', height = '100%'),
           ),
-          column(12, uiOutput(ns('item_map_exp')))
+          shiny$column(12, shiny$uiOutput(ns('item_map_exp')))
         )
       )
     })

@@ -1,13 +1,13 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, renderUI, req, tagList, HTML, downloadButton, downloadHandler],
+  shiny,
   dplyr[full_join],
   ggplot2[ggsave],
   zip[zipr]
 )
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns('download_button'))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns('download_button'))
 }
 
 server <- function(id,
@@ -26,11 +26,11 @@ server <- function(id,
                    pcar_obj,
                    import_values,
                    impute_option) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    output$download_button <- renderUI({
-      req(
+    output$download_button <- shiny$renderUI({
+      shiny$req(
         rval_model(),
         person_fit_data(),
         item_fit_data(),
@@ -39,9 +39,9 @@ server <- function(id,
         lr_obj(),
         pcar_obj()
       )
-      tagList(
-        HTML('<br><br>'),
-        downloadButton(
+      shiny$tagList(
+        shiny$HTML('<br><br>'),
+        shiny$downloadButton(
           ns('download_zip'),
           label = 'Download results',
           style =
@@ -55,7 +55,7 @@ server <- function(id,
       )
     })
 
-    output$download_zip <- downloadHandler(
+    output$download_zip <- shiny$downloadHandler(
       filename = function() {
         paste0(Sys.Date(), "_REBL_Calculator.zip")
       },

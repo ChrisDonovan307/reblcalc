@@ -1,5 +1,5 @@
 box::use(
-  shiny[NS, uiOutput, moduleServer, eventReactive, renderUI, req, tagList, fluidRow, column, showModal, modalDialog, HTML, renderText],
+  shiny,
   dplyr[select, all_of, mutate, across, bind_cols, arrange],
   shinycssloaders[showPageSpinner],
   missRanger[missRanger],
@@ -18,8 +18,8 @@ load('app/data/rebl_items.rda')
 # straight into page layout.
 
 ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("imputation_page"))
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns("imputation_page"))
 }
 
 server <- function(id,
@@ -27,12 +27,12 @@ server <- function(id,
                    analysis_state,
                    impute_option,
                    run_analysis) {
-  moduleServer(id, function(input, output, session) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Impute ----
     # Impute data if option is selected
-    rval_imp_out <- eventReactive(run_analysis(), {
+    rval_imp_out <- shiny$eventReactive(run_analysis(), {
 
       # First reorder the DF to put respondent id first, then rebl items in order
       uid <- import_values$respondent_id()
@@ -43,7 +43,7 @@ server <- function(id,
         return(df)
       } else {
         if (sum(is.na(select(import_values$rval_df(), all_of(rebl_items)))) == 0) {
-          showModal(modalDialog(
+          shiny$showModal(shiny$modalDialog(
             title = 'Error',
             'The "impute missing data" button was checked, but there is no
             missing data in your dataset. Please remove it before continuing. You
@@ -66,7 +66,7 @@ server <- function(id,
           },
           type = 6,
           color = '#2F4F4F',
-          caption = HTML(
+          caption = shiny$HTML(
             'Imputing data. Note that this can take a minute<br>
             if there are lots of missing data.'
           ))
@@ -78,7 +78,7 @@ server <- function(id,
 
     # Clean DF ----
     # If imputed, bind imputed df back to original that has respondent id
-    rval_df_clean <- eventReactive(run_analysis(), {
+    rval_df_clean <- shiny$eventReactive(run_analysis(), {
       if (impute_option() == FALSE) {
         rval_imp_out()
       } else if (impute_option() == TRUE) {
@@ -90,8 +90,8 @@ server <- function(id,
 
     # OOB ----
     # Also save imputation error stats every time imputation happens
-    rval_imp_oob <- eventReactive(run_analysis(), {
-      req(rval_imp_out())
+    rval_imp_oob <- shiny$eventReactive(run_analysis(), {
+      shiny$req(rval_imp_out())
       rval_imp_out()$pred_errors[rval_imp_out()$best_iter, ] %>%
         as.data.frame() %>%
         tibble::rownames_to_column() %>%
@@ -100,35 +100,35 @@ server <- function(id,
     })
 
     # Page Layout ----
-    output$imputation_page <- renderUI({
-      req(analysis_state()) # Only show when analysis has been run
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('imp_title'))),
-          column(12, uiOutput(ns('imp_exp'))),
-          column(12, reactableOutput(ns('oob_table'))),
-          column(12, uiOutput(ns('no_imp')))
+    output$imputation_page <- shiny$renderUI({
+      shiny$req(analysis_state()) # Only show when analysis has been run
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('imp_title'))),
+          shiny$column(12, shiny$uiOutput(ns('imp_exp'))),
+          shiny$column(12, reactableOutput(ns('oob_table'))),
+          shiny$column(12, shiny$uiOutput(ns('no_imp')))
         )
       )
     })
 
-    output$imp_title <- renderUI({
-      HTML(
+    output$imp_title <- shiny$renderUI({
+      shiny$HTML(
         '<h3 class="body-header-3">Imputation</h3>'
       )
     })
 
-    output$no_imp <- renderUI({
+    output$no_imp <- shiny$renderUI({
       if (impute_option() == FALSE && analysis_state() == TRUE)
-        HTML(
+        shiny$HTML(
           '<p>No imputation performed.</p>'
         )
     })
 
     # Add imputation output, only if performed though
-    output$imp_exp <- renderText({
+    output$imp_exp <- shiny$renderText({
       if (impute_option() == TRUE && analysis_state() == TRUE) {
-        HTML(
+        shiny$HTML(
           '<p>Out-of-bag (OOB) errors are an estimate of the imputation
           error from the missForest algorithm. For categorical data, they
           represent the proportion of falsely classified values (PFC). A value of
