@@ -1,14 +1,22 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, renderUI, HTML, renderText],
+  reactable[renderReactable, reactableOutput]
+)
+
+# Load REBL items data
+load('app/data/rebl_items.rda')
+
 # Mod Item Fit
 
-item_fit_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns('item_fit'))
 }
 
-item_fit_server <- function(id,
-                            rval_model,
-                            rval_df_clean,
-                            analysis_state) {
+server <- function(id,
+                   rval_model,
+                   rval_df_clean,
+                   analysis_state) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

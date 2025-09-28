@@ -1,14 +1,18 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, renderUI, req, HTML]
+)
+
 # Landing Page
 
-landing_page_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("landing_page"))
+  uiOutput(ns("landing"))
 }
 
-landing_page_server <- function(id, analysis_state) {
+server <- function(id, analysis_state) {
   moduleServer(id, function(input, output, session) {
 
-    output$landing_page <- renderUI({
+    output$landing <- renderUI({
       req(!analysis_state())
       HTML(
         '<h3 class="body-header-3">Welcome</h3>

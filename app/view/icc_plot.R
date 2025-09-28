@@ -1,11 +1,17 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, renderUI, req, tagList, fluidRow, column, div, plotOutput, HTML, renderImage],
+  eRm[plotjointICC],
+  grDevices[png, dev.off]
+)
+
 # ICC Plot Page
 
-icc_plot_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns('icc_plot'))
 }
 
-icc_plot_server <- function(id, rval_model) {
+server <- function(id, rval_model) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

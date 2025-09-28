@@ -1,11 +1,17 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, req, renderText, HTML, renderPlot, tagList, fluidRow, column, div, plotOutput],
+  ggplot2[ggplot, aes, geom_histogram, theme_classic, labs, scale_x_continuous, theme, element_text],
+  dplyr[`%>%`]
+)
+
 # REBL Histogram Module
 
-rebl_hist_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns('rebl_hist_page'))
 }
 
-rebl_hist_server <- function(id, person_fit_data, rval_model) {
+server <- function(id, person_fit_data, rval_model) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

@@ -1,3 +1,13 @@
+box::use(
+  shiny[NS, moduleServer, eventReactive, req, HTML],
+  dplyr[select, all_of],
+  eRm[RM],
+  shinycssloaders[showPageSpinner]
+)
+
+# Load REBL items data
+load('app/data/rebl_items.rda')
+
 # Rasch Module
 
 rasch_ui <- function(id) {

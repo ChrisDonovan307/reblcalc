@@ -1,11 +1,17 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, renderUI, req, tagList, fluidRow, column, div, HTML, renderImage, plotOutput],
+  eRm[plotPWmap],
+  grDevices[png, dev.off]
+)
+
 # Mod Item Map
 
-item_map_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns('item_map_page'))
+  uiOutput(ns('item_map'))
 }
 
-item_map_server <- function(id, rval_model) {
+server <- function(id, rval_model) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -41,7 +47,7 @@ item_map_server <- function(id, rval_model) {
       HTML('<h3 class="body-header-3">Item Map</h3>')
     })
 
-    output$item_map <- renderImage({
+    output$item_map_plot <- renderImage({
       rval_item_map()
     }, deleteFile = FALSE)
 
@@ -55,14 +61,14 @@ item_map_server <- function(id, rval_model) {
       )
     })
 
-    output$item_map_page <- renderUI({
+    output$item_map <- renderUI({
       req(rval_model())
       tagList(
         fluidRow(
           column(12, uiOutput(ns('item_map_title'))),
           div(
             style = "width: 100%; text-align: center;",
-            plotOutput(ns('item_map'), width = '80%', height = '100%'),
+            plotOutput(ns('item_map_plot'), width = '80%', height = '100%'),
           ),
           column(12, uiOutput(ns('item_map_exp')))
         )

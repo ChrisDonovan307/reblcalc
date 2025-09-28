@@ -1,11 +1,20 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, renderUI, HTML, tagList, fluidRow, column],
+  dplyr[mutate, row_number],
+  reactable[renderReactable, colDef, reactableOutput]
+)
+
+# Load REBL text data
+load('app/data/rebl_text.rda')
+
 # REBL Item Page
 
-rebl_items_page_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns("rebl_items_page"))
 }
 
-rebl_items_page_server <- function(id) {
+server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

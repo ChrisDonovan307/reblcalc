@@ -1,17 +1,23 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, req, renderText, HTML, tagList, fluidRow, column],
+  dplyr[rename, mutate, select, everything],
+  reactable[renderReactable, reactableOutput]
+)
+
 # Mod Person Fit
 
-person_fit_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("person_fit_page"))
+  uiOutput(ns("person_fit"))
 }
 
-person_fit_server <- function(id,
-                              link_option,
-                              respondent_id,
-                              rval_df_clean,
-                              rval_model,
-                              analysis_state,
-                              rval_rescaled_scores) {
+server <- function(id,
+                   link_option,
+                   respondent_id,
+                   rval_df_clean,
+                   rval_model,
+                   analysis_state,
+                   rval_rescaled_scores) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -68,7 +74,7 @@ person_fit_server <- function(id,
     })
 
     # Put outputs together on page
-    output$person_fit_page <- renderUI({
+    output$person_fit <- renderUI({
       req(rval_model(), person_fit_data())
       tagList(
         column(12, uiOutput(ns('person_fit_exp'))),

@@ -1,3 +1,7 @@
+box::use(
+  shiny[NS, moduleServer]
+)
+
 # Module Template
 template_ui <- function(id) {
   ns <- NS(id)

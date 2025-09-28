@@ -1,7 +1,17 @@
-# Import Module for REBL Score Calculator
+box::use(
+  shiny[NS, tagList, div, HTML, radioButtons, conditionalPanel, fileInput, uiOutput, moduleServer, reactive, req, renderUI, selectInput, showModal, modalDialog, modalButton],
+  readr[read_csv],
+  readxl[read_excel],
+  dplyr[mutate, across, all_of, select],
+  tools[file_ext]
+)
 
-# UI for file import section
-import_ui <- function(id) {
+# Load REBL items data
+load('app/data/rebl_items.rda')
+
+
+#' @export
+ui <- function(id) {
   ns <- NS(id)
   tagList(
 
@@ -56,8 +66,8 @@ import_ui <- function(id) {
   )
 }
 
-# Server logic for file import
-import_server <- function(id) {
+#' @export
+server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -66,7 +76,7 @@ import_server <- function(id) {
 
       if (input$data_source == 'example') {
         # Load example data
-        load('data/example.rda')
+        load('app/data/example.rda')
         df <- example
       } else {
         # Make sure file is uploaded for upload option

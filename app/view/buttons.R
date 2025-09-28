@@ -1,8 +1,17 @@
-# Buttons Module
-buttons_ui <- function(id) {
+box::use(
+  shiny[NS, tagList, div, HTML, uiOutput, moduleServer, renderUI, observeEvent, req, reactiveVal, actionButton, reactive],
+  shinyWidgets[awesomeCheckbox]
+)
+
+box::use(
+  app/view/import
+)
+
+#' @export
+ui <- function(id) {
   ns <- NS(id)
   tagList(
-    import_ui(ns('import')),
+    import$ui(ns('import')),
     div(
       # style = 'padding: 0px 10px 0px 10px;',
       class = 'button-box',
@@ -14,14 +23,14 @@ buttons_ui <- function(id) {
   )
 }
 
-buttons_server <- function(id) {
+#' @export
+server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    import_values <- import_server('import')
+    import_values <- import$server('import')
 
     output$impute_button <- renderUI({
-      # req(import_values$file_input() | import_values$data_source() == 'example')
       awesomeCheckbox(
         inputId = ns("impute_option"),
         label = "Impute missing data",

@@ -1,24 +1,31 @@
-download_ui <- function(id) {
+box::use(
+  shiny[NS, uiOutput, moduleServer, renderUI, req, tagList, HTML, downloadButton, downloadHandler],
+  dplyr[full_join],
+  ggplot2[ggsave],
+  zip[zipr]
+)
+
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns('download_button'))
 }
 
-download_server <- function(id,
-                            rval_model,
-                            person_fit_data,
-                            item_fit_data,
-                            analysis_state,
-                            rval_item_map,
-                            rval_icc_plot,
-                            rval_pi_map,
-                            rval_imp_out,
-                            rval_df,
-                            rval_rebl_hist,
-                            gof_obj,
-                            lr_obj,
-                            pcar_obj,
-                            import_values,
-                            impute_option) {
+server <- function(id,
+                   rval_model,
+                   person_fit_data,
+                   item_fit_data,
+                   analysis_state,
+                   rval_item_map,
+                   rval_icc_plot,
+                   rval_pi_map,
+                   rval_imp_out,
+                   rval_df,
+                   rval_rebl_hist,
+                   gof_obj,
+                   lr_obj,
+                   pcar_obj,
+                   import_values,
+                   impute_option) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

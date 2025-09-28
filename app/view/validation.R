@@ -1,10 +1,16 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, req, renderUI, HTML, tagList, fluidRow, column, renderText],
+  eRm[person.parameter, gofIRT, LRtest],
+  shinycssloaders[showPageSpinner]
+)
+
 # Model Validation Module
-validation_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns("validation"))
 }
 
-validation_server <- function(id, rval_model, analysis_state) {
+server <- function(id, rval_model, analysis_state) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

@@ -1,3 +1,11 @@
+box::use(
+  shiny[NS, moduleServer, reactive, req],
+  plink[link.ability]
+)
+
+# Load baseline model data
+load('app/data/baseline_model.rda')
+
 # Linking Module
 linking_ui <- function(id) {
   ns <- NS(id)

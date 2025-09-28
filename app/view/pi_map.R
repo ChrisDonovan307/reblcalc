@@ -1,11 +1,16 @@
+box::use(
+  shiny[NS, uiOutput, moduleServer, reactive, renderUI, req, tagList, fluidRow, column, div, HTML, renderImage, plotOutput],
+  grDevices[png, dev.off]
+)
+
 # Mod PI Map
 
-pi_map_ui <- function(id) {
+ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns('pi_map_page'))
 }
 
-pi_map_server <- function(id, rval_model) {
+server <- function(id, rval_model) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

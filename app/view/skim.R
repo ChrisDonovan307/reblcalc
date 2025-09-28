@@ -1,16 +1,22 @@
-# Module Skim Page
+box::use(
+  shiny,
+  skimr[skim],
+  dplyr[filter, select, mutate, any_of, `%>%`, starts_with],
+  reactable[renderReactable, colDef, reactableOutput],
+  stringr[str_remove]
+)
 
-skim_page_ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("skim_page"))
+ui <- function(id) {
+  ns <- shiny$NS(id)
+  shiny$uiOutput(ns("skim"))
 }
 
-skim_page_server <- function(id, rval_df) {
-  moduleServer(id, function(input, output, session) {
+server <- function(id, rval_df) {
+  shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Skim page ----
-    output$skim_page <- renderUI({
+    output$skim_page <- shiny$renderUI({
       req(rval_df(), rval_skim_df())
 
       # Check if there is anything to show
@@ -20,41 +26,41 @@ skim_page_server <- function(id, rval_df) {
       # If nothing, return NULL (nothing rendered)
       if (!has_numeric && !has_factors) return(NULL)
 
-      tagList(
-        fluidRow(
-          column(12, uiOutput(ns('skim_title')))
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns('skim_title')))
         ),
 
         # Numeric table
         if (has_numeric) {
-          fluidRow(
-            column(12, renderUI(HTML('<h4 class="body-header-4">Numeric</h4>'))),
-            column(12, reactableOutput(ns('skim_numeric')))
+          shiny$fluidRow(
+            shiny$column(12, shiny$renderUI(shiny$HTML('<h4 class="body-header-4">Numeric</h4>'))),
+            shiny$column(12, reactableOutput(ns('skim_numeric')))
           )
         },
 
         # Factor table
         if (has_factors) {
-          fluidRow(
-            column(12, renderUI(HTML('<h4 class="body-header-4">Factors</h4>'))),
-            column(12, reactableOutput(ns('skim_factor')))
+          shiny$fluidRow(
+            shiny$column(12, shiny$renderUI(shiny$HTML('<h4 class="body-header-4">Factors</h4>'))),
+            shiny$column(12, reactableOutput(ns('skim_factor')))
           )
         }
       )
     })
 
     # Title ----
-    output$skim_title <- renderUI({
-      req(rval_df())
-      HTML(
+    output$skim_title <- shiny$renderUI({
+      shiny$req(rval_df())
+      shiny$HTML(
         '<h3 class="body-header-3">Skim</h3>
         <p>Explore summary statistics and missing values from your dataset.</p>'
       )
     })
 
     # Skim df ----
-    rval_skim_df <- reactive({
-      req(rval_df())
+    rval_skim_df <- shiny$reactive({
+      shiny$req(rval_df())
       rval_df() %>%
         skimr::skim() %>%
         as.data.frame()
@@ -62,7 +68,7 @@ skim_page_server <- function(id, rval_df) {
 
     # Skim numeric ----
     output$skim_numeric <- renderReactable({
-      req(rval_df(), rval_skim_df())
+      shiny$req(rval_df(), rval_skim_df())
       rval_skim_df() %>%
         dplyr::filter(skim_type == 'numeric') %>%
         dplyr::select(-c(starts_with('factor'), skim_type)) %>%
@@ -85,7 +91,7 @@ skim_page_server <- function(id, rval_df) {
 
     # Skim factors ----
     output$skim_factor <- renderReactable({
-      req(rval_skim_df())
+      shiny$req(rval_skim_df())
       df <- rval_skim_df() %>%
         dplyr::filter(skim_type == 'factor')
 
