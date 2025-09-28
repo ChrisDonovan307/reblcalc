@@ -28,7 +28,6 @@
 box::use(
   shiny,
   readr,
-  readxl,
   ggplot2,
   tibble,
   purrr,

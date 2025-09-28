@@ -9,7 +9,7 @@ get_reactable(
   sortable = TRUE,
   resizable = TRUE,
   filterable = TRUE,
-  searchable = TRUE,
+  searchable = FALSE,
   pagination = TRUE,
   bordered = TRUE,
   wrap = TRUE,

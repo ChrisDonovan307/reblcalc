@@ -60,7 +60,7 @@ ui <- fluidPage(
     font_scale = 1
   ),
 
-  includeCSS("www/styles.css"),
+  # includeCSS("www/styles.css"),
   useShinyjs(),
 
   ## Header image ----
