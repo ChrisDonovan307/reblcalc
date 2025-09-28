@@ -2,7 +2,9 @@ box::use(
   shiny,
   dplyr[full_join, `%>%`],
   ggplot2[ggsave],
-  zip[zipr]
+  zip[zipr],
+  utils[write.csv],
+  stats[setNames]
 )
 
 #' @export
