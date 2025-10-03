@@ -21,7 +21,8 @@ box::use(
   app/view/icc_plot,
   app/view/pi_map,
   app/view/rebl_hist,
-  app/view/download
+  app/view/download,
+  app/logic/show_placeholder[show_placeholder],
 )
 
 # set spinner options
@@ -88,6 +89,18 @@ ui <- function(id) {
           ),
           shiny$tabPanel('REBL Items', withSpinner(rebl_items$ui('rebl_items'))),
           shiny$tabPanel('Skim', withSpinner(skim$ui('skim'))),
+
+          # shiny$observeEvent(import_values$analysis_state(), {
+          #   if (import_values$analysis_state()) {
+          #     shiny$insertTab(
+          #       'tabset',
+          #       shiny$tabPanel('Imputation'),
+          #       target = 'Skim',
+          #       positino = 'after'
+          #     )
+          #   }
+          # }),
+
           shiny$tabPanel('Imputation', withSpinner(imputation$ui('imputation'))),
           shiny$tabPanel('Item Map', withSpinner(item_map$ui('item_map'))),
           shiny$tabPanel('ICC Plot', withSpinner(icc_plot$ui('icc_plot'))),
@@ -162,20 +175,24 @@ server <- function(input, output, session) {
   )
   rval_item_map <- item_map$server(
     'item_map',
-    rval_model
+    rval_model,
+    analysis_state
   )
   rval_icc_plot <- icc_plot$server(
     'icc_plot',
-    rval_model
+    rval_model,
+    analysis_state
   )
   rval_pi_map <- pi_map$server(
     'pi_map',
-    rval_model
+    rval_model,
+    analysis_state
   )
   rval_rebl_hist <- rebl_hist$server(
     'rebl_hist',
     person_fit_data,
-    rval_model
+    rval_model,
+    analysis_state
   )
 
   ## Reset analysis_state ----

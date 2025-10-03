@@ -4,7 +4,9 @@ box::use(
   grDevices[png, dev.off]
 )
 
-# ICC Plot Page
+box::use(
+  app/logic/show_placeholder[show_placeholder],
+)
 
 #' @export
 ui <- function(id) {
@@ -13,7 +15,7 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, rval_model) {
+server <- function(id, rval_model, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -50,6 +52,10 @@ server <- function(id, rval_model) {
     })
 
     output$icc_plot <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(

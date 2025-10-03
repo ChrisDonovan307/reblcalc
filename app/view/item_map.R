@@ -4,6 +4,10 @@ box::use(
   grDevices[png, dev.off]
 )
 
+box::use(
+  app/logic/show_placeholder[show_placeholder],
+)
+
 # Mod Item Map
 
 #' @export
@@ -13,7 +17,7 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, rval_model) {
+server <- function(id, rval_model, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -64,6 +68,10 @@ server <- function(id, rval_model) {
     })
 
     output$item_map <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(

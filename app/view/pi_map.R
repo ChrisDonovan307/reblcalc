@@ -5,6 +5,7 @@ box::use(
 
 box::use(
   app/logic/get_pi_map[get_pi_map],
+  app/logic/show_placeholder[show_placeholder],
 )
 
 # Mod PI Map
@@ -16,7 +17,7 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, rval_model) {
+server <- function(id, rval_model, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -73,6 +74,10 @@ server <- function(id, rval_model) {
     })
 
     output$pi_map <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(

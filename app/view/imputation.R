@@ -9,19 +9,17 @@ box::use(
 )
 
 box::use(
-  app/logic/get_reactable[get_reactable]
+  app/logic/get_reactable[get_reactable],
+  app/logic/show_placeholder[show_placeholder],
 )
 
 # Load REBL items data
 load('app/data/rebl_items.rda')
 
-# TODO: Remove some of the reactable titles and explanations, just render them
-# straight into page layout.
-
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns("imputation_page"))
+  shiny$uiOutput(ns('imputation'))
 }
 
 #' @export
@@ -102,19 +100,6 @@ server <- function(id,
         mutate(oob = round(oob, 3))
     })
 
-    # Page Layout ----
-    output$imputation_page <- shiny$renderUI({
-      shiny$req(analysis_state()) # Only show when analysis has been run
-      shiny$tagList(
-        shiny$fluidRow(
-          shiny$column(12, shiny$uiOutput(ns('imp_title'))),
-          shiny$column(12, shiny$uiOutput(ns('imp_exp'))),
-          shiny$column(12, reactableOutput(ns('oob_table'))),
-          shiny$column(12, shiny$uiOutput(ns('no_imp')))
-        )
-      )
-    })
-
     output$imp_title <- shiny$renderUI({
       shiny$HTML(
         '<h3 class="body-header-3">Imputation</h3>'
@@ -152,6 +137,19 @@ server <- function(id,
             )
           )
       }
+    })
+
+    # Imputation page ----
+    output$imputation <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+      shiny$fluidRow(
+        shiny$column(12, shiny$uiOutput(ns('imp_title'))),
+        shiny$column(12, shiny$uiOutput(ns('imp_exp'))),
+        shiny$column(12, reactableOutput(ns('oob_table'))),
+        shiny$column(12, shiny$uiOutput(ns('no_imp')))
+      )
     })
 
     # Return reactive values

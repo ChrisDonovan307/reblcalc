@@ -7,6 +7,7 @@ box::use(
 box::use(
   app/logic/get_item_fit[get_item_fit],
   app/logic/get_reactable[get_reactable],
+  app/logic/show_placeholder[show_placeholder],
 )
 
 # Load REBL items data
@@ -68,6 +69,10 @@ server <- function(id,
     })
 
     output$item_fit <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(

@@ -4,6 +4,10 @@ box::use(
   dplyr[`%>%`]
 )
 
+box::use(
+  app/logic/show_placeholder[show_placeholder],
+)
+
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
@@ -11,7 +15,7 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, person_fit_data, rval_model) {
+server <- function(id, person_fit_data, rval_model, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -56,6 +60,10 @@ server <- function(id, person_fit_data, rval_model) {
     })
 
     output$rebl_hist <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
       shiny$req(rval_model())
       shiny$tagList(shiny$fluidRow(
         shiny$column(12, shiny$uiOutput(ns('rebl_hist_title'))),

@@ -4,11 +4,13 @@ box::use(
   dplyr[filter, select, mutate, any_of, `%>%`, starts_with],
   reactable[renderReactable, colDef, reactableOutput],
   stringr[str_remove],
-  stats[setNames]
+  stats[setNames],
+  htmltools[tags, tagList],
 )
 
 box::use(
-  app/logic/get_reactable[get_reactable]
+  app/logic/get_reactable[get_reactable],
+  app/logic/show_placeholder[show_placeholder],
 )
 
 #' @export
@@ -24,6 +26,7 @@ server <- function(id, rval_df) {
 
     # Skim page ----
     output$skim <- shiny$renderUI({
+
       shiny$req(rval_df(), rval_skim_df())
 
       # Check if there is anything to show

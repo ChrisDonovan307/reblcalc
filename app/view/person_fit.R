@@ -7,6 +7,7 @@ box::use(
 box::use(
   app/logic/get_person_fit[get_person_fit],
   app/logic/get_reactable[get_reactable],
+  app/logic/show_placeholder[show_placeholder],
 )
 
 # Mod Person Fit
@@ -82,6 +83,10 @@ server <- function(id,
 
     # Put outputs together on page
     output$person_fit <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
       shiny$req(rval_model(), person_fit_data())
       shiny$tagList(
         shiny$column(12, shiny$uiOutput(ns('person_fit_exp'))),
