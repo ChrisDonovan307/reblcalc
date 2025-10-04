@@ -77,7 +77,7 @@ jobs:
             exit 0
           fi
 
-      - name: Deploy app and renv.lock via rsync
+      - name: Deploy app via rsync
         uses: burnett01/rsync-deployments@7.1.0
         with:
           switches: -avzr --delete
@@ -94,10 +94,10 @@ jobs:
           #             ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
           #             "cd ${{ env.REMOTE_PATH }} && Rscript -e 'renv::restore()'"
 
-      - name: Restore renv on remote server
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
-          chmod 600 id_rsa
-          ssh -o StrictHostKeyChecking=no -i id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
-            "cd ${{ env.REMOTE_PATH }} && Rscript -e 'renv::restore()'"
-
+          #       - name: Restore renv on remote server
+          #         run: |
+          #           echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
+          #           chmod 600 id_rsa
+          #           ssh -o StrictHostKeyChecking=no -i id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
+          #             "cd ${{ env.REMOTE_PATH }} && Rscript -e 'renv::restore()'"
+          # 
