@@ -7,29 +7,29 @@ box::use(
 )
 
 box::use(
-  app/view/buttons,
-  app/view/landing,
-  app/view/rebl_items,
-  app/view/skim,
-  app/view/imputation,
-  app/view/rasch,
-  app/view/linking,
-  app/view/validation,
-  app/view/person_fit,
-  app/view/item_fit,
-  app/view/item_map,
-  app/view/icc_plot,
-  app/view/pi_map,
-  app/view/rebl_hist,
-  app/view/download,
-  app/logic/show_placeholder[show_placeholder],
+  app / view / buttons,
+  app / view / landing,
+  app / view / rebl_items,
+  app / view / skim,
+  app / view / imputation,
+  app / view / rasch,
+  app / view / linking,
+  app / view / validation,
+  app / view / person_fit,
+  app / view / item_fit,
+  app / view / item_map,
+  app / view / icc_plot,
+  app / view / pi_map,
+  app / view / rebl_hist,
+  app / view / download,
+  app / logic / show_placeholder[show_placeholder],
 )
 
 # set spinner options
 options(
   spinner.type = 6,
-  spinner.color = '#2f4f4f',
-  spinner.proxy.height = '100px',
+  spinner.color = "#2f4f4f",
+  spinner.proxy.height = "100px",
   spinner.hide.ui = TRUE
 )
 
@@ -43,14 +43,12 @@ ui <- function(id) {
   ns <- shiny$NS(id)
 
   shiny$fluidPage(
-
     theme = bs_theme(
-      preset = 'lumen',
-      info = '#2f4f4f',
-      primary = '#2f4f4f',
+      preset = "lumen",
+      info = "#2f4f4f",
+      primary = "#2f4f4f",
       font_scale = 1
     ),
-
     shiny$includeCSS("app/styles/styles.css"),
     useShinyjs(),
 
@@ -58,18 +56,17 @@ ui <- function(id) {
     shiny$fluidRow(
       shiny$column(12, shiny$div(
         style = "text-align: center; padding: 4px;",
-        shiny$img(src = "static/images/forest3.jpg", width = '100%')
+        shiny$img(src = "static/images/forest3.jpg", width = "100%")
       ))
     ),
-
     shiny$sidebarLayout(
 
       ## Sidebar panel -----------------------------------------------------------
       shiny$sidebarPanel(
         width = 3,
         shiny$HTML("<h2 class='body-header-1'>REBL Score Calculator</h2>"),
-        buttons$ui('buttons'),
-        download$ui('download')
+        buttons$ui("buttons"),
+        download$ui("download")
       ),
 
 
@@ -77,18 +74,17 @@ ui <- function(id) {
 
       shiny$mainPanel(
         width = 9,
-
         shiny$tabsetPanel(
-          id = 'tabset',
+          id = "tabset",
           shiny$tabPanel(
-            'Info',
+            "Info",
             shiny$fluidRow(
-              landing$ui('landing'),
-              validation$ui('validation')
+              landing$ui("landing"),
+              validation$ui("validation")
             )
           ),
-          shiny$tabPanel('REBL Items', withSpinner(rebl_items$ui('rebl_items'))),
-          shiny$tabPanel('Skim', withSpinner(skim$ui('skim'))),
+          shiny$tabPanel("REBL Items", withSpinner(rebl_items$ui("rebl_items"))),
+          shiny$tabPanel("Skim", withSpinner(skim$ui("skim"))),
 
           # shiny$observeEvent(import_values$analysis_state(), {
           #   if (import_values$analysis_state()) {
@@ -101,18 +97,17 @@ ui <- function(id) {
           #   }
           # }),
 
-          shiny$tabPanel('Imputation', withSpinner(imputation$ui('imputation'))),
-          shiny$tabPanel('Item Map', withSpinner(item_map$ui('item_map'))),
-          shiny$tabPanel('ICC Plot', withSpinner(icc_plot$ui('icc_plot'))),
-          shiny$tabPanel('PI Map', withSpinner(pi_map$ui('pi_map'))),
-          shiny$tabPanel('Histogram', withSpinner(rebl_hist$ui('rebl_hist'))),
-          shiny$tabPanel('Person Fit', withSpinner(person_fit$ui('person_fit'))),
-          shiny$tabPanel('Item Fit', withSpinner(item_fit$ui('item_fit')))
+          shiny$tabPanel("Imputation", withSpinner(imputation$ui("imputation"))),
+          shiny$tabPanel("Item Map", withSpinner(item_map$ui("item_map"))),
+          shiny$tabPanel("ICC Plot", withSpinner(icc_plot$ui("icc_plot"))),
+          shiny$tabPanel("PI Map", withSpinner(pi_map$ui("pi_map"))),
+          shiny$tabPanel("Histogram", withSpinner(rebl_hist$ui("rebl_hist"))),
+          shiny$tabPanel("Person Fit", withSpinner(person_fit$ui("person_fit"))),
+          shiny$tabPanel("Item Fit", withSpinner(item_fit$ui("item_fit")))
         )
       )
     )
   )
-
 }
 
 
@@ -120,46 +115,45 @@ ui <- function(id) {
 
 #' @export
 server <- function(input, output, session) {
-
   ## analysis_state ----
   # Set state to false. when true, download button appears, and landing page
   # becomes model test page
   analysis_state <- shiny$reactiveVal(FALSE)
-  button_values <- buttons$server('buttons')
+  button_values <- buttons$server("buttons")
   import_values <- button_values$import_values
   shiny$observeEvent(button_values$run_analysis(), {
     analysis_state(TRUE)
   })
 
   ## Server calls ----
-  landing$server('landing', analysis_state)
-  rebl_items$server('rebl_items')
-  skim$server('skim', import_values$rval_df)
+  landing$server("landing", analysis_state)
+  rebl_items$server("rebl_items")
+  skim$server("skim", import_values$rval_df)
   imp_values <- imputation$server(
-    id = 'imputation',
+    id = "imputation",
     import_values = import_values,
     analysis_state = analysis_state,
     impute_option = button_values$impute_option,
     run_analysis = button_values$run_analysis
   )
   rval_model <- rasch$server(
-    'rasch',
+    "rasch",
     run_analysis = button_values$run_analysis,
     imp_values,
     import_values
   )
   rval_rescaled_scores <- linking$server(
-    'linking',
+    "linking",
     button_values,
     rval_model
   )
   valid_values <- validation$server(
-    'validation',
+    "validation",
     rval_model = rval_model,
     analysis_state = analysis_state
   )
   person_fit_data <- person_fit$server(
-    'person_fit',
+    "person_fit",
     button_values$link_option,
     import_values$respondent_id,
     imp_values$rval_df_clean,
@@ -168,41 +162,44 @@ server <- function(input, output, session) {
     rval_rescaled_scores
   )
   item_fit_data <- item_fit$server(
-    'item_fit',
+    "item_fit",
     rval_model,
     imp_values$rval_df_clean,
     analysis_state
   )
   rval_item_map <- item_map$server(
-    'item_map',
+    "item_map",
     rval_model,
     analysis_state
   )
   rval_icc_plot <- icc_plot$server(
-    'icc_plot',
+    "icc_plot",
     rval_model,
     analysis_state
   )
   rval_pi_map <- pi_map$server(
-    'pi_map',
+    "pi_map",
     rval_model,
     analysis_state
   )
   rval_rebl_hist <- rebl_hist$server(
-    'rebl_hist',
+    "rebl_hist",
     person_fit_data,
     rval_model,
     analysis_state
   )
 
   ## Reset analysis_state ----
-  shiny$observeEvent(button_values$impute_option() | button_values$link_option(), {
-    analysis_state(FALSE)
-  }, ignoreNULL = FALSE)
+  shiny$observeEvent(button_values$impute_option() | button_values$link_option(),
+    {
+      analysis_state(FALSE)
+    },
+    ignoreNULL = FALSE
+  )
 
   ## download_server ----
   download$server(
-    'download',
+    "download",
     rval_model,
     person_fit_data,
     item_fit_data,
@@ -219,5 +216,4 @@ server <- function(input, output, session) {
     import_values,
     impute_option = button_values$impute_option
   )
-
 }

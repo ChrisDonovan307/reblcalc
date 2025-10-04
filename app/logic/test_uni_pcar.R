@@ -45,9 +45,8 @@ box::use(
 #' }
 test_uni_pcar <- function(model,
                           n_vars = length(model$se.beta),
-                          rotate = 'Promax',
+                          rotate = "Promax",
                           n_factors = 4) {
-
   # Input validation
   assertthat::assert_that(
     inherits(model, "eRm"),
@@ -77,12 +76,12 @@ test_uni_pcar <- function(model,
   eigenvalues <- c(pca$values[1:10])
   y_limit <- ifelse(max(eigenvalues) > 2.1, max(eigenvalues), 2.1)
   plot(eigenvalues,
-       ylab = "Eigenvalues",
-       xlab = "Item Number",
-       type = "b",
-       ylim = c(1, y_limit)
+    ylab = "Eigenvalues",
+    xlab = "Item Number",
+    type = "b",
+    ylim = c(1, y_limit)
   )
-  abline(h = 2, col = 'red', lwd = 2, lty = 2)
+  abline(h = 2, col = "red", lwd = 2, lty = 2)
 
   return(pca)
 }

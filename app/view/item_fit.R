@@ -5,20 +5,20 @@ box::use(
 )
 
 box::use(
-  app/logic/get_item_fit[get_item_fit],
-  app/logic/get_reactable[get_reactable],
-  app/logic/show_placeholder[show_placeholder],
+  app / logic / get_item_fit[get_item_fit],
+  app / logic / get_reactable[get_reactable],
+  app / logic / show_placeholder[show_placeholder],
 )
 
 # Load REBL items data
-load('app/data/rebl_items.rda')
+load("app/data/rebl_items.rda")
 
 # Mod Item Fit
 
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns('item_fit'))
+  shiny$uiOutput(ns("item_fit"))
 }
 
 #' @export
@@ -41,7 +41,7 @@ server <- function(id,
     output$item_fit_exp <- shiny$renderText({
       if (analysis_state()) {
         shiny$HTML(
-          '<ul>
+          "<ul>
             <li><b>prop</b> is the proportion of people who performed the
               pro-environmental behavior in the last week.</li>
             <li><b>i.fit</b> is the item fit, as measured by the standardized
@@ -58,7 +58,7 @@ server <- function(id,
             <li><b>Z</b> is the z-score of the test of fit. 0.0 is expected, while
              values over +/-2 are misfitting.</li>
             <li><b>eta.se</b> is the standard error of the item difficulty.</li>
-          </ul>'
+          </ul>"
         )
       }
     })
@@ -76,14 +76,13 @@ server <- function(id,
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(
-          shiny$column(12, shiny$uiOutput(ns('item_fit_title'))),
-          shiny$column(12, shiny$uiOutput(ns('item_fit_exp'))),
-          shiny$column(12, reactable::reactableOutput(ns('item_fit_data')))
+          shiny$column(12, shiny$uiOutput(ns("item_fit_title"))),
+          shiny$column(12, shiny$uiOutput(ns("item_fit_exp"))),
+          shiny$column(12, reactable::reactableOutput(ns("item_fit_data")))
         )
       )
     })
 
     return(item_fit_data)
-
   })
 }

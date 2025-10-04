@@ -13,7 +13,6 @@ ui <- function(id) {
 #' @export
 server <- function(id, analysis_state) {
   shiny$moduleServer(id, function(input, output, session) {
-
     output$landing <- shiny$renderUI({
       shiny$req(!analysis_state())
       shiny$HTML(
@@ -80,6 +79,5 @@ server <- function(id, analysis_state) {
           Donovan (christopher.donovan@uvm.edu)</p>'
       )
     })
-
   })
 }

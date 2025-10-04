@@ -6,8 +6,8 @@ box::use(
 )
 
 box::use(
-  app/logic/spinner_wrapper[spinner_wrapper],
-  app/logic/test_uni_pcar[test_uni_pcar],
+  app / logic / spinner_wrapper[spinner_wrapper],
+  app / logic / test_uni_pcar[test_uni_pcar],
 )
 
 # Model Validation Module
@@ -28,7 +28,7 @@ server <- function(id, rval_model, analysis_state) {
       rval_model() %>%
         person.parameter() %>%
         gofIRT() %>%
-        spinner_wrapper(shiny$HTML('Calculating Goodness of Fit...'))
+        spinner_wrapper(shiny$HTML("Calculating Goodness of Fit..."))
     })
 
     # LR test of invariance
@@ -37,7 +37,7 @@ server <- function(id, rval_model, analysis_state) {
       showPageSpinner(
         rval_model() %>%
           LRtest() %>%
-          spinner_wrapper(shiny$HTML('Calculating test of invariance...'))
+          spinner_wrapper(shiny$HTML("Calculating test of invariance..."))
       )
     })
 
@@ -46,7 +46,7 @@ server <- function(id, rval_model, analysis_state) {
       shiny$req(rval_model())
       rval_model() %>%
         test_uni_pcar() %>%
-        spinner_wrapper(shiny$HTML('Calculating test of unidimensionality...'))
+        spinner_wrapper(shiny$HTML("Calculating test of unidimensionality..."))
     })
 
     output$model_test_header <- shiny$renderUI({
@@ -66,8 +66,8 @@ server <- function(id, rval_model, analysis_state) {
     })
 
     output$gof <- shiny$renderPrint({
-        gof_obj() %>%
-          summary()
+      gof_obj() %>%
+        summary()
     })
 
     output$gof_exp_lr_title <- shiny$renderUI({
@@ -112,10 +112,10 @@ server <- function(id, rval_model, analysis_state) {
 
     output$pcar_exp <- shiny$renderUI({
       shiny$HTML(
-        '<p>The top output shows the summary from the PCA model. The bottom output
+        "<p>The top output shows the summary from the PCA model. The bottom output
         shows the loadings of the principal components (SS loadings). If the
         highest SS loading of any component is less than 2.0, thet test shows
-        demonstrates unidimensionality.</p>'
+        demonstrates unidimensionality.</p>"
       )
     })
 
@@ -125,15 +125,15 @@ server <- function(id, rval_model, analysis_state) {
 
       shiny$tagList(
         shiny$fluidRow(
-          shiny$column(12, shiny$uiOutput(ns('model_test_header'))),
-          shiny$column(12, shiny$uiOutput(ns('gof_title'))),
-          shiny$column(12, shiny$verbatimTextOutput(ns('gof'))),
-          shiny$column(12, shiny$uiOutput(ns('gof_exp_lr_title'))),
-          shiny$column(12, shiny$verbatimTextOutput(ns('lr'))),
-          shiny$column(12, shiny$uiOutput(ns('lr_exp_pcar_title'))),
-          shiny$column(12, shiny$verbatimTextOutput(ns('pcar_sum'))),
-          shiny$column(12, shiny$verbatimTextOutput(ns('pcar_loadings'))),
-          shiny$column(12, shiny$uiOutput(ns('pcar_exp')))
+          shiny$column(12, shiny$uiOutput(ns("model_test_header"))),
+          shiny$column(12, shiny$uiOutput(ns("gof_title"))),
+          shiny$column(12, shiny$verbatimTextOutput(ns("gof"))),
+          shiny$column(12, shiny$uiOutput(ns("gof_exp_lr_title"))),
+          shiny$column(12, shiny$verbatimTextOutput(ns("lr"))),
+          shiny$column(12, shiny$uiOutput(ns("lr_exp_pcar_title"))),
+          shiny$column(12, shiny$verbatimTextOutput(ns("pcar_sum"))),
+          shiny$column(12, shiny$verbatimTextOutput(ns("pcar_loadings"))),
+          shiny$column(12, shiny$uiOutput(ns("pcar_exp")))
         )
       )
     })

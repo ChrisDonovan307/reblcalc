@@ -4,8 +4,8 @@ box::use(
 )
 
 box::use(
-  app/logic/get_pi_map[get_pi_map],
-  app/logic/show_placeholder[show_placeholder],
+  app / logic / get_pi_map[get_pi_map],
+  app / logic / show_placeholder[show_placeholder],
 )
 
 # Mod PI Map
@@ -13,7 +13,7 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns('pi_map'))
+  shiny$uiOutput(ns("pi_map"))
 }
 
 #' @export
@@ -22,24 +22,23 @@ server <- function(id, rval_model, analysis_state) {
     ns <- session$ns
 
     rval_pi_map <- shiny$reactive({
-
       # A temp file to save the output. It will be deleted after renderImage
       # sends it, because deleteFile=TRUE.
-      outfile <- tempfile(fileext = '.png')
+      outfile <- tempfile(fileext = ".png")
 
       png(
         outfile,
         width = 8,
         height = 6,
-        units = 'in',
+        units = "in",
         res = 100
       )
       get_pi_map(
         rval_model(),
         sorted = TRUE,
         main = NA_character_,
-        latdim = 'Latent Trait',
-        pplabel = 'Latent Trait\nDistribution',
+        latdim = "Latent Trait",
+        pplabel = "Latent Trait\nDistribution",
         cex.gen = 0.8,
         margins = c(3, 11, 0, 1)
       )
@@ -58,18 +57,21 @@ server <- function(id, rval_model, analysis_state) {
     })
 
     # PI Map image for tab output
-    output$pi_map_plot <- shiny$renderImage({
-      rval_pi_map()
-    }, deleteFile = FALSE)
+    output$pi_map_plot <- shiny$renderImage(
+      {
+        rval_pi_map()
+      },
+      deleteFile = FALSE
+    )
 
     # Explanation
     output$pi_map_exp <- shiny$renderUI({
       shiny$HTML(
-        'The lower plot of the Person Item Map shows the REBL items and item
+        "The lower plot of the Person Item Map shows the REBL items and item
         difficulties in order of easiest to hardest. THe distribution of REBL
         scores is shown in the histogram on top. This is a way to see how well
         the item difficulties match the person abilities.
-        <br><br><br>'
+        <br><br><br>"
       )
     })
 
@@ -81,17 +83,16 @@ server <- function(id, rval_model, analysis_state) {
       shiny$req(rval_model())
       shiny$tagList(
         shiny$fluidRow(
-          shiny$column(12, shiny$uiOutput(ns('pi_map_title'))),
+          shiny$column(12, shiny$uiOutput(ns("pi_map_title"))),
           shiny$div(
             style = "width: 100%; text-align: center;",
-            shiny$plotOutput(ns('pi_map_plot'), width = '80%', height = '100%')
+            shiny$plotOutput(ns("pi_map_plot"), width = "80%", height = "100%")
           ),
-          shiny$column(12, shiny$uiOutput(ns('pi_map_exp')))
+          shiny$column(12, shiny$uiOutput(ns("pi_map_exp")))
         )
       )
     })
 
     return(rval_pi_map)
-
   })
 }

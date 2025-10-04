@@ -7,7 +7,7 @@ box::use(
 )
 
 # Load REBL items data
-load('app/data/rebl_items.rda')
+load("app/data/rebl_items.rda")
 
 #' @export
 ui <- function(id) {
@@ -16,17 +16,16 @@ ui <- function(id) {
 
     # Data source selection
     shiny$div(
-      class = 'button-box',
-
+      class = "button-box",
       shiny$radioButtons(
-        ns('data_source'),
-        label = shiny$HTML('<b>Choose data source:</b>'),
+        ns("data_source"),
+        label = shiny$HTML("<b>Choose data source:</b>"),
         choices = list(
-          'Upload your own data' = 'upload',
-          'Use example data' = 'example'
+          "Upload your own data" = "upload",
+          "Use example data" = "example"
         ),
-        selected = 'upload',
-        width = '100%'
+        selected = "upload",
+        width = "100%"
       ),
 
       # Conditional UI for file upload
@@ -34,11 +33,11 @@ ui <- function(id) {
         condition = "input.data_source == 'upload'",
         ns = ns,
         shiny$div(
-          style = 'padding: 0px 10px 0px 10px;',
+          style = "padding: 0px 10px 0px 10px;",
           shiny$fileInput(
-            ns('file'),
-            shiny$HTML('<b>Upload .csv or .xlsx file:</b>'),
-            accept = c('.csv', '.xlsx', '.xls')
+            ns("file"),
+            shiny$HTML("<b>Upload .csv or .xlsx file:</b>"),
+            accept = c(".csv", ".xlsx", ".xls")
           )
         )
       ),
@@ -48,7 +47,7 @@ ui <- function(id) {
         condition = "input.data_source == 'example'",
         ns = ns,
         shiny$div(
-          style = 'padding: 0;',
+          style = "padding: 0;",
           shiny$HTML(
             "<b>Example Dataset:</b> This is a simulated dataset with 500
             responses to the 24 original REBL items. You can analyze it with
@@ -56,11 +55,10 @@ ui <- function(id) {
           )
         )
       )
-
     ), # end button-box div
 
     # Select respondent ID column
-    shiny$uiOutput(ns('dropdown_columns'))
+    shiny$uiOutput(ns("dropdown_columns"))
   )
 }
 
@@ -71,11 +69,10 @@ server <- function(id) {
 
     # Import File reactive - handles both uploaded files and example data
     rval_df <- shiny$reactive({
+      load("app/data/rebl_items.rda")
+      load("app/data/example.rda")
 
-      load('app/data/rebl_items.rda')
-      load('app/data/example.rda')
-
-      if (input$data_source == 'example') {
+      if (input$data_source == "example") {
         # Load example data
         df <- example
       } else {
@@ -99,8 +96,8 @@ server <- function(id) {
       # Make sure all REBL items are in DF
       if (!all(rebl_items %in% names(df))) {
         stop(
-          'File must contain all 24 REBL items by name. Reload app and check
-            Info tab for a list of items.'
+          "File must contain all 24 REBL items by name. Reload app and check
+            Info tab for a list of items."
         )
       }
 
@@ -108,9 +105,9 @@ server <- function(id) {
       bad_patterns <- which(rowSums(select(df, all_of(rebl_items)), na.rm = TRUE) %in% c(0, 24))
       if (length(bad_patterns) > 0) {
         stop(
-          'Cannot calculate REBL Score for person(s) ',
-          paste0(bad_patterns, collapse = ', '),
-          ' due to unacceptable pattern of responses. Check to make sure they ',
+          "Cannot calculate REBL Score for person(s) ",
+          paste0(bad_patterns, collapse = ", "),
+          " due to unacceptable pattern of responses. Check to make sure they ",
           'answered at least one question "yes" and at least one question "no".'
         )
       }
@@ -123,36 +120,36 @@ server <- function(id) {
           sum()
         if (n_miss >= 2000) {
           shiny$showModal(shiny$modalDialog(
-            title = 'Warning',
+            title = "Warning",
             paste0(
-              'There are ',
-              format(n_miss, big.mark = ','),
+              "There are ",
+              format(n_miss, big.mark = ","),
               ' missing values in the REBL item columns of your dataset. Be
               aware that whether or not you decide to impute these data, the
               run time of your analysis could increase substantially. Explore
               your data in the "Skim" tab to see where the missing values are.'
             ),
             easyClose = TRUE,
-            footer = shiny$modalButton('OK')
+            footer = shiny$modalButton("OK")
           ))
         }
       }
 
-      print('import.R: made rval_df()')
+      print("import.R: made rval_df()")
       return(df)
     })
 
     # Get column names to send back to UI to choose respondent ID
     output$dropdown_columns <- shiny$renderUI({
       shiny$req(rval_df())
-      print('import.R: starting dropdown_columns')
+      print("import.R: starting dropdown_columns")
       column_names <- colnames(rval_df())
       shiny$div(
-        class = 'button-box',
+        class = "button-box",
         shiny$tagList(
           shiny$selectInput(
-            ns('respondent_id'),
-            shiny$HTML('<b>Select Respondent ID Column</b>'),
+            ns("respondent_id"),
+            shiny$HTML("<b>Select Respondent ID Column</b>"),
             choices = column_names
           )
         )
@@ -166,6 +163,5 @@ server <- function(id) {
       respondent_id = shiny$reactive(input$respondent_id),
       data_source = shiny$reactive(input$data_source)
     ))
-
   })
 }

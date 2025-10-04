@@ -5,13 +5,13 @@ box::use(
 )
 
 box::use(
-  app/logic/show_placeholder[show_placeholder],
+  app / logic / show_placeholder[show_placeholder],
 )
 
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns('rebl_hist'))
+  shiny$uiOutput(ns("rebl_hist"))
 }
 
 #' @export
@@ -25,13 +25,13 @@ server <- function(id, person_fit_data, rval_model, analysis_state) {
         ggplot(aes(x = rebl_score)) +
         geom_histogram(
           binwidth = 0.3,
-          fill = 'grey',
-          color = 'black'
+          fill = "grey",
+          color = "black"
         ) +
         theme_classic() +
         labs(
-          x = 'REBL Score',
-          y = 'Count'
+          x = "REBL Score",
+          y = "Count"
         ) +
         scale_x_continuous(breaks = seq(-5, 3, 1)) +
         theme(
@@ -51,11 +51,11 @@ server <- function(id, person_fit_data, rval_model, analysis_state) {
 
     output$rebl_hist_exp <- shiny$renderText({
       shiny$HTML(
-        '<p>This histogram shows REBL Scores for your sample. If you chose to
+        "<p>This histogram shows REBL Scores for your sample. If you chose to
         rescale your scores based on our baseline model, the rescaled scores will
         be shown here. Note that the CML estimation method used in the eRm package
         does not assume assume a perfectly normal distribution of scores, so it is
-        okay if the scores are not centered on zero.</p><br><br><br>'
+        okay if the scores are not centered on zero.</p><br><br><br>"
       )
     })
 
@@ -66,15 +66,15 @@ server <- function(id, person_fit_data, rval_model, analysis_state) {
 
       shiny$req(rval_model())
       shiny$tagList(shiny$fluidRow(
-        shiny$column(12, shiny$uiOutput(ns('rebl_hist_title'))),
+        shiny$column(12, shiny$uiOutput(ns("rebl_hist_title"))),
         shiny$column(
           12,
           shiny$div(
-            style = 'display: flex; justify-content: center;',
-            shiny$plotOutput(ns('rebl_hist_plot'), width = '750px')
+            style = "display: flex; justify-content: center;",
+            shiny$plotOutput(ns("rebl_hist_plot"), width = "750px")
           )
         ),
-        shiny$column(12, shiny$uiOutput(ns('rebl_hist_exp')))
+        shiny$column(12, shiny$uiOutput(ns("rebl_hist_exp")))
       ))
     })
 

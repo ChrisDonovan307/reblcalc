@@ -37,7 +37,6 @@ box::use(
 #' item_stats <- get_item_fit(rasch_model, response_data, rebl_item_names)
 #' }
 get_item_fit <- function(model, df, rebl_items = rebl_items) {
-
   # Input validation
   assertthat::assert_that(
     inherits(model, "eRm"),
@@ -61,28 +60,28 @@ get_item_fit <- function(model, df, rebl_items = rebl_items) {
     dplyr::select(dplyr::all_of(rebl_items)) %>%
     colMeans(na.rm = TRUE) %>%
     as.data.frame() %>%
-    setNames('prop') %>%
-    tibble::rownames_to_column(var = 'rebl_item')
+    setNames("prop") %>%
+    tibble::rownames_to_column(var = "rebl_item")
 
   # Get DF of most item fit statistics
   item_fit_df <- model %>%
     eRm::person.parameter() %>%
     eRm::itemfit() %>%
-    .[!names(.) %in% c('st.res', 'i.disc', 'i.df')] %>%
+    .[!names(.) %in% c("st.res", "i.disc", "i.df")] %>%
     purrr::map(as.vector) %>%
     as.data.frame() %>%
     dplyr::mutate(rebl_item = percent_eco_df$rebl_item)
 
   item_difficulty_df <- data.frame(
-    rebl_item = stringr::str_remove(names(model$betapar), 'beta '),
+    rebl_item = stringr::str_remove(names(model$betapar), "beta "),
     eta = c(-model$betapar[[1]], model$etapar),
     eta_se = c(-model$se.beta[[1]], model$se.eta)
   )
 
   # Join all three DFs together
   output <- percent_eco_df %>%
-    dplyr::full_join(item_fit_df, by = 'rebl_item') %>%
-    dplyr::full_join(item_difficulty_df, by = 'rebl_item') %>%
+    dplyr::full_join(item_fit_df, by = "rebl_item") %>%
+    dplyr::full_join(item_difficulty_df, by = "rebl_item") %>%
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~ round(., 3)))
   return(output)
 }

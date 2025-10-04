@@ -8,7 +8,7 @@ box::use(
 )
 
 box::use(
-  app/logic/read_erm[read_erm]
+  app / logic / read_erm[read_erm]
 )
 #' Link Tests Using Plink
 #'
@@ -40,8 +40,7 @@ box::use(
 #' # Extract linking constants
 #' constants <- link_result$constants
 #' }
-link_tests <- function(new_model, baseline_model, method = 'SL') {
-
+link_tests <- function(new_model, baseline_model, method = "SL") {
   # Input validation
   assertthat::assert_that(
     inherits(new_model, "eRm"),
@@ -56,7 +55,7 @@ link_tests <- function(new_model, baseline_model, method = 'SL') {
     msg = "method must be a single character string"
   )
   assertthat::assert_that(
-    method %in% c('SL', 'MM', 'MS', 'HB'),
+    method %in% c("SL", "MM", "MS", "HB"),
     msg = "method must be one of: 'SL', 'MM', 'MS', 'HB'"
   )
 
@@ -65,7 +64,7 @@ link_tests <- function(new_model, baseline_model, method = 'SL') {
 
   # Put models into a list for convenience
   models <- list(baseline_model, new_model) %>%
-    setNames(c('baseline_model', 'new_model'))
+    setNames(c("baseline_model", "new_model"))
 
   # Combine pars into the object that plink requires
   pars <- plink::combine.pars(

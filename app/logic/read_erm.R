@@ -36,11 +36,9 @@ box::use(
 #' # Get raw parameter matrices
 #' raw_pars <- read_erm(rasch_model, as.irt.pars = FALSE)
 #' }
-read_erm <- function (x,
-                      loc.out = FALSE,
-                      as.irt.pars = TRUE)
-{
-
+read_erm <- function(x,
+                     loc.out = FALSE,
+                     as.irt.pars = TRUE) {
   # Input validation
   assertthat::assert_that(
     inherits(x, "eRm"),
@@ -71,9 +69,9 @@ read_erm <- function (x,
       for (k in 1:time) {
         tmp <- c(beta[it == i & g == j & t == k], rep(NA, max(cat) - cat[i]))
         pars[[comb$grp[comb[, 1] == j & comb[, 2] ==
-                         k]]] <- rbind(pars[[comb$grp[comb[, 1] ==
-                                                        j &
-                                                        comb[, 2] == k]]], tmp)
+          k]]] <- rbind(pars[[comb$grp[comb[, 1] ==
+          j &
+          comb[, 2] == k]]], tmp)
         names(pars)[comb$grp[comb[, 1] == j & comb[, 2] == k]] <- paste("group", j, ".time", k, sep = "")
       }
     }
@@ -83,13 +81,11 @@ read_erm <- function (x,
   if (min(cat) == 2 & max(cat == 2)) {
     mod <- "drm"
     tmp.it <- 1:items
-  }
-  else if (min(cat) == 2 & max(cat > 2)) {
+  } else if (min(cat) == 2 & max(cat > 2)) {
     mod <- c("drm", "gpcm")
     tmp <- 1:items
     tmp.it <- list(tmp[cat == 2], tmp[cat > 2])
-  }
-  else if (min(cat) > 2 & max(cat > 2)) {
+  } else if (min(cat) > 2 & max(cat > 2)) {
     mod <- "gpcm"
     tmp.it <- 1:items
   }
@@ -98,14 +94,14 @@ read_erm <- function (x,
     rownames(pars[[i]]) <- NULL
     colnames(pars[[i]]) <- NULL
     pars[[i]] <- plink::sep.pars(pars[[i]],
-                          cat = cat,
-                          poly.mod = pm,
-                          loc.out = loc.out)
+      cat = cat,
+      poly.mod = pm,
+      loc.out = loc.out
+    )
   }
   if (length(pars) == 1) {
     pars <- plink::as.irt.pars(pars[[1]])
-  }
-  else {
+  } else {
     common <- vector("list", (groups * time) - 1)
     for (i in 1:length(common)) {
       common[[i]] <- matrix(1:items, items, 2)

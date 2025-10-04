@@ -1,7 +1,7 @@
 ## code to prepare `example` dataset goes here
 
 # Synthetic dataset for example and testing
-raw_example <- read.csv('dev/raw_example.csv')
+raw_example <- read.csv("dev/raw_example.csv")
 col_names <- names(raw_example)
 
 # Get target proportions
@@ -57,5 +57,5 @@ str(df)
 
 # Save
 example <- df
-readr::write_csv(example, 'dev/example.csv')
+readr::write_csv(example, "dev/example.csv")
 usethis::use_data(example, overwrite = TRUE)

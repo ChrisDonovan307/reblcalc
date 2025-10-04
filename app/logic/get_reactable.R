@@ -77,7 +77,6 @@ box::use(
 #' )
 #' }
 #'
-
 get_reactable <- function(df,
                           sortable = TRUE,
                           resizable = TRUE,
@@ -87,7 +86,7 @@ get_reactable <- function(df,
                           bordered = TRUE,
                           wrap = TRUE,
                           rownames = FALSE,
-                          onClick = 'select',
+                          onClick = "select",
                           striped = TRUE,
                           defaultPageSize = 10,
                           showPageSizeOptions = TRUE,
@@ -96,8 +95,8 @@ get_reactable <- function(df,
                           compact = TRUE,
                           fullWidth = TRUE,
                           ...) {
-  assert_that('data.frame' %in% class(df), msg = 'The df object must be a data.frame')
-  assert_that(nrow(df) > 0, msg = 'The df must have at least 1 row')
+  assert_that("data.frame" %in% class(df), msg = "The df object must be a data.frame")
+  assert_that(nrow(df) > 0, msg = "The df must have at least 1 row")
 
   reactable::reactable(
     df,

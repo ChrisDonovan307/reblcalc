@@ -5,11 +5,11 @@ box::use(
 )
 
 box::use(
-  app/logic/link_tests[link_tests]
+  app / logic / link_tests[link_tests]
 )
 
 # Load baseline model data
-load('app/data/baseline_model.rda')
+load("app/data/baseline_model.rda")
 
 # Linking Module
 #' @export
@@ -29,7 +29,7 @@ server <- function(id, button_values, rval_model) {
     rval_plink <- shiny$reactive({
       shiny$req(button_values$link_option())
       rval_model() %>%
-        link_tests(baseline_model, method = 'SL')
+        link_tests(baseline_model, method = "SL")
     })
 
     # Pull rescaled scores for new model only
@@ -40,6 +40,5 @@ server <- function(id, button_values, rval_model) {
     })
 
     return(rval_rescaled_scores)
-
   })
 }

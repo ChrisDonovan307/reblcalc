@@ -9,8 +9,8 @@ add_missing <- function(df, id_col = 1, prop = 0.1) {
   # work only on the other columns
   df_data <- select(df, -all_of(id_col))
 
-  n <- nrow(df_data) * ncol(df_data)       # total number of cells (excluding ID)
-  n_missing <- ceiling(prop * n)           # number of cells to replace
+  n <- nrow(df_data) * ncol(df_data) # total number of cells (excluding ID)
+  n_missing <- ceiling(prop * n) # number of cells to replace
 
   # pick random positions
   miss_idx <- arrayInd(sample(n, n_missing), dim(df_data))
@@ -24,7 +24,7 @@ add_missing <- function(df, id_col = 1, prop = 0.1) {
   }
 
   # put ID back in
-  df_missing <- cbind(df[ , id_col, drop = FALSE], df_missing)
+  df_missing <- cbind(df[, id_col, drop = FALSE], df_missing)
 
   return(df_missing)
 }
@@ -33,5 +33,5 @@ example_mis10 <- add_missing(example, id_col = "respondent_id", prop = 0.1)
 
 skimr::skim(example_mis10)
 
-readr::write_csv(example_mis10, 'dev/example_mis10.csv')
+readr::write_csv(example_mis10, "dev/example_mis10.csv")
 usethis::use_data(example_mis10, overwrite = TRUE)

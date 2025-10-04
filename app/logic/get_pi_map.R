@@ -53,21 +53,19 @@ box::use(
 #' # Map with specific item subset
 #' plotPImap2(rasch_model, item.subset = c("item1", "item5", "item10"))
 #' }
-get_pi_map <- function (object,
-                        item.subset = "all",
-                        sorted = FALSE,
-                        main = "Person-Item Map",
-                        latdim = "Latent Dimension",
-                        pplabel = "Person\nParameter\nDistribution",
-                        cex.gen = 0.7,
-                        xrange = NULL,
-                        warn.ord = TRUE,
-                        warn.ord.colour = "black",
-                        irug = TRUE,
-                        pp = NULL,
-                        margins = c(2.5, 4, 0, 1))
-{
-
+get_pi_map <- function(object,
+                       item.subset = "all",
+                       sorted = FALSE,
+                       main = "Person-Item Map",
+                       latdim = "Latent Dimension",
+                       pplabel = "Person\nParameter\nDistribution",
+                       cex.gen = 0.7,
+                       xrange = NULL,
+                       warn.ord = TRUE,
+                       warn.ord.colour = "black",
+                       irug = TRUE,
+                       pp = NULL,
+                       margins = c(2.5, 4, 0, 1)) {
   # Input validation
   assertthat::assert_that(
     inherits(object, "eRm"),
@@ -104,53 +102,57 @@ get_pi_map <- function (object,
 
   def.par <- par(no.readonly = TRUE)
   if ((object$model == "LLTM") || (object$model == "LRSM") ||
-      (object$model == "LPCM"))
+    (object$model == "LPCM")) {
     stop("Item-Person Map are computed only for RM, RSM, and PCM!")
+  }
   if (object$model == "RM" || max(object$X, na.rm = TRUE) <
-      2) {
+    2) {
     dRm <- TRUE
     threshtable <- cbind(object$betapar, object$betapar) *
       -1
     rownames(threshtable) <- substring(rownames(threshtable), first = 6, last = 9999)
-  }
-  else {
+  } else {
     dRm <- FALSE
     threshtable <- eRm::thresholds(object)$threshtable[[1]]
   }
   tr <- as.matrix(threshtable)
   if (is.character(item.subset)) {
     if (length(item.subset) > 1 && all(item.subset %in%
-                                       rownames(threshtable)))
+      rownames(threshtable))) {
       tr <- tr[item.subset, ]
-    else if (length(item.subset) != 1 || !(item.subset ==
-                                           "all"))
+    } else if (length(item.subset) != 1 || !(item.subset ==
+      "all")) {
       stop(
         "item.subset misspecified. Use 'all' or vector of at least two valid item indices/names."
       )
-  }
-  else {
+    }
+  } else {
     if (length(item.subset) > 1 && all(item.subset %in%
-                                       1:nrow(tr)))
+      1:nrow(tr))) {
       tr <- tr[item.subset, ]
-    else
+    } else {
       stop(
         "item.subset misspecified. Use 'all' or vector of at least two valid item indices/names."
       )
+    }
   }
-  if (sorted)
+  if (sorted) {
     tr <- tr[order(tr[, 1], decreasing = FALSE), ]
+  }
   loc <- as.matrix(tr[, 1])
   tr <- as.matrix(tr[, -1])
-  if (is.null(pp))
+  if (is.null(pp)) {
     suppressWarnings(pp <- eRm::person.parameter(object))
-  else if ((!("ppar" %in% class(pp))) || !identical(pp$X, object$X))
+  } else if ((!("ppar" %in% class(pp))) || !identical(pp$X, object$X)) {
     stop("pp is not a person.parameter object which matches the main Rasch data object!")
+  }
   theta <- unlist(pp$thetapar)
   tt <- table(theta)
   ttx <- as.numeric(names(tt))
   yrange <- c(0, nrow(tr) + 1)
-  if (is.null(xrange))
+  if (is.null(xrange)) {
     xrange <- range(c(tr, theta), na.rm = T)
+  }
   nf <- layout(matrix(c(2, 1), 2, 1, byrow = TRUE), heights = c(1, 3), T)
 
   # mar1 -----
@@ -183,23 +185,27 @@ get_pi_map <- function (object,
   if (irug == TRUE) {
     y.offset <- nrow(tr) * 0.0275
     tr.rug <- as.numeric(tr)
-    if (any(is.na(tr.rug)))
+    if (any(is.na(tr.rug))) {
       tr.rug <- tr.rug[-which(is.na(tr.rug))]
-    segments(tr.rug,
-             rep(yrange[2], length(tr.rug)) + y.offset,
-             tr.rug,
-             rep(yrange[2], length(tr.rug)) + 100)
+    }
+    segments(
+      tr.rug,
+      rep(yrange[2], length(tr.rug)) + y.offset,
+      tr.rug,
+      rep(yrange[2], length(tr.rug)) + 100
+    )
   }
   warn <- rep(" ", nrow(tr))
   for (j in 1:nrow(tr)) {
     i <- nrow(tr) + 1 - j
     assign("trpoints", tr[i, !is.na(tr[i, ])])
     npnts <- length(trpoints)
-    if (!dRm && !all(sort(trpoints) == trpoints))
-      ptcol = warn.ord.colour
-    else
-      ptcol = "black"
-    if (npnts > 1)
+    if (!dRm && !all(sort(trpoints) == trpoints)) {
+      ptcol <- warn.ord.colour
+    } else {
+      ptcol <- "black"
+    }
+    if (npnts > 1) {
       points(
         sort(trpoints),
         rep(j, npnts),
@@ -207,11 +213,11 @@ get_pi_map <- function (object,
         cex = 1,
         col = ptcol
       )
+    }
     if (dRm) {
       lines(xrange * 1.5, rep(j, 2), lty = "dotted")
-    }
-    else {
-      if (npnts > 1)
+    } else {
+      if (npnts > 1) {
         text(
           sort(trpoints),
           rep(j, npnts),
@@ -220,16 +226,19 @@ get_pi_map <- function (object,
           pos = 1,
           col = ptcol
         )
-      if (!all(sort(trpoints) == trpoints))
+      }
+      if (!all(sort(trpoints) == trpoints)) {
         warn[j] <- "*"
+      }
     }
     points(loc[i],
-           j,
-           pch = 20,
-           cex = 1.5,
-           col = ptcol)
+      j,
+      pch = 20,
+      cex = 1.5,
+      col = ptcol
+    )
   }
-  if (warn.ord)
+  if (warn.ord) {
     axis(
       4,
       at = 1:nrow(tr),
@@ -239,6 +248,7 @@ get_pi_map <- function (object,
       padj = 0.7,
       las = 2
     )
+  }
 
   # mar2 -----
   par(mar = c(0, margins[2], 3, margins[4]))

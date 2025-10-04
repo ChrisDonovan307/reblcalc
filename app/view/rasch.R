@@ -6,7 +6,7 @@ box::use(
 )
 
 # Load REBL items data
-load('app/data/rebl_items.rda')
+load("app/data/rebl_items.rda")
 
 # Rasch Module
 
@@ -17,9 +17,9 @@ ui <- function(id) {
 
 #' @export
 server <- function(id,
-                         run_analysis,
-                         imp_values,
-                         import_values) {
+                   run_analysis,
+                   imp_values,
+                   import_values) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -30,28 +30,28 @@ server <- function(id,
       # Check for unique respondent ID column
       if (any(duplicated(import_values$rval_df()[[import_values$respondent_id()]]))) {
         stop(
-          'The respondent ID column that you have selected does not uniquely',
-          ' identify respondents. Please choose another column.'
+          "The respondent ID column that you have selected does not uniquely",
+          " identify respondents. Please choose another column."
         )
       } else {
-
         # Run Rasch model
-        showPageSpinner({
-          imp_values$rval_df_clean() %>%
-            select(all_of(rebl_items)) %>%
-            select(order(colnames(.))) %>%
-            RM()
-        },
-        type = 6,
-        color = '#2F4F4F',
-        caption = shiny$HTML(
-          'Running Rasch model. Note that this can take a minute<br>or two if there
-          are lots of missing data.'
-        ))
+        showPageSpinner(
+          {
+            imp_values$rval_df_clean() %>%
+              select(all_of(rebl_items)) %>%
+              select(order(colnames(.))) %>%
+              RM()
+          },
+          type = 6,
+          color = "#2F4F4F",
+          caption = shiny$HTML(
+            "Running Rasch model. Note that this can take a minute<br>or two if there
+          are lots of missing data."
+          )
+        )
       }
     })
 
     return(rval_model)
-
   })
 }

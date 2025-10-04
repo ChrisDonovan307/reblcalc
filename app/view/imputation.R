@@ -9,17 +9,17 @@ box::use(
 )
 
 box::use(
-  app/logic/get_reactable[get_reactable],
-  app/logic/show_placeholder[show_placeholder],
+  app / logic / get_reactable[get_reactable],
+  app / logic / show_placeholder[show_placeholder],
 )
 
 # Load REBL items data
-load('app/data/rebl_items.rda')
+load("app/data/rebl_items.rda")
 
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$uiOutput(ns('imputation'))
+  shiny$uiOutput(ns("imputation"))
 }
 
 #' @export
@@ -34,7 +34,6 @@ server <- function(id,
     # Impute ----
     # Impute data if option is selected
     rval_imp_out <- shiny$eventReactive(run_analysis(), {
-
       # First reorder the DF to put respondent id first, then rebl items in order
       uid <- import_values$respondent_id()
       df <- import_values$rval_df() %>%
@@ -45,32 +44,32 @@ server <- function(id,
       } else {
         if (sum(is.na(select(import_values$rval_df(), all_of(rebl_items)))) == 0) {
           shiny$showModal(shiny$modalDialog(
-            title = 'Error',
+            title = "Error",
             'The "impute missing data" button was checked, but there is no
             missing data in your dataset. Please remove it before continuing. You
             may also explore your dataset in the "Skim" tab.',
             easyClose = TRUE
           ))
           stop()
-
         } else {
-
-          showPageSpinner({
-            imp_out <- df %>%
-              dplyr::select(all_of(rebl_items)) %>%
-              dplyr::mutate(across(everything(), as.factor)) %>%
-              as.data.frame() %>%
-              missRanger(
-                seed = 42,
-                data_only = FALSE
-              )
-          },
-          type = 6,
-          color = '#2F4F4F',
-          caption = shiny$HTML(
-            'Imputing data. Note that this can take a minute<br>
-            if there are lots of missing data.'
-          ))
+          showPageSpinner(
+            {
+              imp_out <- df %>%
+                dplyr::select(all_of(rebl_items)) %>%
+                dplyr::mutate(across(everything(), as.factor)) %>%
+                as.data.frame() %>%
+                missRanger(
+                  seed = 42,
+                  data_only = FALSE
+                )
+            },
+            type = 6,
+            color = "#2F4F4F",
+            caption = shiny$HTML(
+              "Imputing data. Note that this can take a minute<br>
+            if there are lots of missing data."
+            )
+          )
 
           return(imp_out)
         }
@@ -96,7 +95,7 @@ server <- function(id,
       rval_imp_out()$pred_errors[rval_imp_out()$best_iter, ] %>%
         as.data.frame() %>%
         tibble::rownames_to_column() %>%
-        setNames(c('rebl_item', 'oob')) %>%
+        setNames(c("rebl_item", "oob")) %>%
         mutate(oob = round(oob, 3))
     })
 
@@ -107,20 +106,21 @@ server <- function(id,
     })
 
     output$no_imp <- shiny$renderUI({
-      if (impute_option() == FALSE && analysis_state() == TRUE)
+      if (impute_option() == FALSE && analysis_state() == TRUE) {
         shiny$HTML(
-          '<p>No imputation performed.</p>'
+          "<p>No imputation performed.</p>"
         )
+      }
     })
 
     # Add imputation output, only if performed though
     output$imp_exp <- shiny$renderText({
       if (impute_option() == TRUE && analysis_state() == TRUE) {
         shiny$HTML(
-          '<p>Out-of-bag (OOB) errors are an estimate of the imputation
+          "<p>Out-of-bag (OOB) errors are an estimate of the imputation
           error from the missForest algorithm. For categorical data, they
           represent the proportion of falsely classified values (PFC). A value of
-          0 would represent perfect prediction.</p>'
+          0 would represent perfect prediction.</p>"
         )
       }
     })
@@ -145,10 +145,10 @@ server <- function(id,
         return(show_placeholder())
       }
       shiny$fluidRow(
-        shiny$column(12, shiny$uiOutput(ns('imp_title'))),
-        shiny$column(12, shiny$uiOutput(ns('imp_exp'))),
-        shiny$column(12, reactableOutput(ns('oob_table'))),
-        shiny$column(12, shiny$uiOutput(ns('no_imp')))
+        shiny$column(12, shiny$uiOutput(ns("imp_title"))),
+        shiny$column(12, shiny$uiOutput(ns("imp_exp"))),
+        shiny$column(12, reactableOutput(ns("oob_table"))),
+        shiny$column(12, shiny$uiOutput(ns("no_imp")))
       )
     })
 
@@ -158,6 +158,5 @@ server <- function(id,
       rval_imp_out = rval_imp_out,
       rval_imp_oob = rval_imp_oob
     ))
-
   })
 }

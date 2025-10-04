@@ -5,11 +5,11 @@ box::use(
 )
 
 box::use(
-  app/logic/get_reactable[get_reactable]
+  app / logic / get_reactable[get_reactable]
 )
 
 # Load REBL text data
-load('app/data/rebl_text.rda')
+load("app/data/rebl_text.rda")
 
 # REBL Item Page
 
@@ -39,11 +39,11 @@ server <- function(id) {
     # Table of REBL item table
     output$rebl_items_table <- renderReactable({
       rebl_text %>%
-        mutate('#' = row_number(), .before = 1) %>%
+        mutate("#" = row_number(), .before = 1) %>%
         get_reactable(
           searchable = TRUE,
           columns = list(
-            '#' = colDef(minWidth = 20),
+            "#" = colDef(minWidth = 20),
             `REBL Item` = colDef(minWidth = 100),
             `In the last week, have you...` = colDef(minWidth = 250)
           )
@@ -54,11 +54,10 @@ server <- function(id) {
     output$rebl_items <- shiny$renderUI({
       shiny$tagList(
         shiny$fluidRow(
-          shiny$column(12, shiny$uiOutput(ns('rebl_items_title'))),
-          shiny$column(12, reactableOutput(ns('rebl_items_table')))
+          shiny$column(12, shiny$uiOutput(ns("rebl_items_title"))),
+          shiny$column(12, reactableOutput(ns("rebl_items_table")))
         )
       )
     })
-
   })
 }
