@@ -1,8 +1,8 @@
 ---
-title: "REBLcalc"
-author: "Dr. Trisha Shrum, Chris Donovan\n"
+title: "REBL Score Calculator"
+author: "Chris Donovan, Dr. Trisha Shrum\n"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-bibliography: data/REBL.bib
+bibliography: app/inst/rebl.bib
 output:
     github_document:
         toc: true
@@ -23,16 +23,17 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The REBL Score Calculator (REBLcalc) is a Shiny App that makes it easy to administer the Repeated Environmental Behavior Latent (REBL) Scale. [You can find the app deployed here](https://cdonov12.w3.uvm.edu/rebl_calculator/). The app currently provides a pretty restricted range of use cases, but we plan to make it more flexible and broadly applicable in the fall of 2025.
+The REBL Score Calculator is a Shiny App that makes it easy to administer the Repeated Environmental Behavior Latent (REBL) Scale. [You can find the app deployed here](https://cdonov12.w3.uvm.edu/reblcalc/). It is built on the `rebl` package, [with documentation available here](https://chrisdonovan307.github.io/rebl/). The app currently provides a pretty restricted range of use cases, but we plan to make it more flexible and broadly applicable in the fall of 2025.
 
 # What it does currently
 
--   Get REBL scores using Conditional Maximum Likelihood (CML) models with the `ltm` package [@rizopoulos2006] or Marginal Maximum Likelihood (MML) models with the `eRm` package [@mair2007].
+-   Get REBL scores using Conditional Maximum Likelihood (CML) models with the `ltm` package [@rizopoulos2006] 
 -   Use test linking with `plink` to scale CML-based REBL scores against our baseline of over 1000 participants.
 
 # What it will do eventually
 
-- Compare MML scores against our baseline of participants.
-- Allow for easy comparisons of panel data with different sets of REBL items.
+-   Run Marginal Maximum Likelihood (MML) models with the `eRm` package [@mair2007].
+-   Compare MML scores against our baseline of participants.
+-   Allow for easy comparisons of panel data with different sets of REBL items.
 
 # References
