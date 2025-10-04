@@ -1,0 +1,95 @@
+name: Test and Deploy
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup system dependencies
+        run: |
+          packages=(
+            # List each package on a separate line.
+          )
+          sudo apt-get update
+          sudo apt-get install --yes "${packages[@]}"
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: renv
+
+      - name: Setup R dependencies
+        uses: r-lib/actions/setup-renv@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Build JavaScript
+        if: always()
+        shell: Rscript {0}
+        run: rhino::build_js()
+
+      - name: Build Sass
+        if: always()
+        shell: Rscript {0}
+        run: rhino::build_sass()
+
+      - name: Run R unit tests
+        if: always()
+        shell: Rscript {0}
+        run: rhino::test_r()
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'   # only deploy on push, not PR
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Determine deploy target
+        run: |
+          echo "BRANCH=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          if [ "${GITHUB_REF_NAME}" = "dev" ]; then
+            echo "REMOTE_PATH=${{ secrets.REMOTE_PATH_DEV }}" >> $GITHUB_ENV
+            echo "echo Deploying to DEV server..."
+          elif [ "${GITHUB_REF_NAME}" = "main" ]; then
+            echo "REMOTE_PATH=${{ secrets.REMOTE_PATH_PROD }}" >> $GITHUB_ENV
+            echo "echo Deploying to PROD server..."
+          else
+            echo "Not a deploy branch, exiting."
+            exit 0
+          fi
+
+      - name: Deploy app and renv.lock via rsync
+        uses: burnett01/rsync-deployments@7.1.0
+        with:
+          switches: -avzr --delete
+          legacy_allow_rsa_hostkeys: "true"
+          path: ./app ./renv.lock
+          remote_path: ${{ env.REMOTE_PATH }}
+          remote_host: ${{ secrets.REMOTE_HOST }}
+          remote_user: ${{ secrets.REMOTE_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Restore renv on remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
+            ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
+            "cd ${{ env.REMOTE_PATH }} && Rscript -e 'renv::restore()'"
