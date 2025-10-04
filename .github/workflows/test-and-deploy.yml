@@ -2,11 +2,12 @@ name: Test and Deploy
 on:
   push:
     branches:
-      - main
+      # - main # Note: since we cannot renv::restore() with Rscript, pushing to main will break
+      # better off just pulling manually for now? Leaving dev in place
       - dev
   pull_request:
     branches:
-      - main
+      # - main
       - dev
   workflow_dispatch:
 permissions:
