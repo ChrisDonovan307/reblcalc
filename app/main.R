@@ -33,8 +33,6 @@ options(
   spinner.hide.ui = TRUE
 )
 
-# devtools::load_all()
-
 
 # ui ----------------------------------------------------------------------
 
@@ -64,7 +62,7 @@ ui <- function(id) {
       ## Sidebar panel -----------------------------------------------------------
       shiny$sidebarPanel(
         width = 3,
-        shiny$HTML("<h2 class='body-header-1'>REBL Score Calculator</h2>"),
+        shiny$HTML("<h1 class='body-header-1'>REBL Score Calculator</h1>"),
         buttons$ui("buttons"),
         download$ui("download")
       ),

@@ -2,7 +2,7 @@ REBL Score Calculator
 ================
 Chris Donovan, Dr. Trisha Shrum
 
-October 04, 2025
+October 07, 2025
 
 - [Introduction](#introduction)
 - [What it does currently](#what-it-does-currently)
@@ -11,13 +11,14 @@ October 04, 2025
 
 # Introduction
 
-The REBL Score Calculator is a Shiny App that makes it easy to
+The REBL Score Calculator is a Shiny application that makes it easy to
 administer the Repeated Environmental Behavior Latent (REBL) Scale. [You
 can find the app deployed here](https://cdonov12.w3.uvm.edu/reblcalc/).
-It is built on the `rebl` package, [with documentation available
-here](https://chrisdonovan307.github.io/rebl/). The app currently
-provides a pretty restricted range of use cases, but we plan to make it
-more flexible and broadly applicable in the fall of 2025.
+It is built on the [REBL
+package](https://chrisdonovan307.github.io/rebl/), which can be used to
+run these analyses yourself. The app currently provides a pretty
+restricted range of use cases, but we plan to make it more flexible and
+broadly applicable in the fall of 2025.
 
 # What it does currently
 
