@@ -7,6 +7,7 @@ if (file.exists("renv")) {
 
 # Allow absolute module imports (relative to the app root).
 options(box.path = getwd())
+# options(shiny.autoreload = TRUE)
 
 # box.lsp languageserver external hook
 if (nzchar(system.file(package = "box.lsp"))) {

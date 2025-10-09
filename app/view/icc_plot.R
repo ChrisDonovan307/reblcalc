@@ -50,24 +50,6 @@ server <- function(id, rval_model, analysis_state) {
       )
     })
 
-    output$icc_plot <- shiny$renderUI({
-      if (!analysis_state()) {
-        return(show_placeholder())
-      }
-
-      shiny$req(rval_model())
-      shiny$tagList(
-        shiny$fluidRow(
-          shiny$column(12, shiny$uiOutput(ns("icc_title"))),
-          shiny$div(
-            style = "width: 100%; text-align: center;",
-            shiny$plotOutput(ns("icc"), width = "80%", height = "100%")
-          ),
-          shiny$column(12, shiny$uiOutput(ns("icc_exp")))
-        )
-      )
-    })
-
     output$icc_title <- shiny$renderUI({
       shiny$HTML(
         '<h3 class="body-header-3">Item Characteristic Curves</h3>'
@@ -88,6 +70,24 @@ server <- function(id, rval_model, analysis_state) {
         A person of a given REBL Score (x-axis) is estimated to have a certain
         probability of performing each PEB (y-axis).
         <br><br><br>"
+      )
+    })
+
+    output$icc_plot <- shiny$renderUI({
+      if (!analysis_state()) {
+        return(show_placeholder())
+      }
+
+      shiny$req(rval_model())
+      shiny$tagList(
+        shiny$fluidRow(
+          shiny$column(12, shiny$uiOutput(ns("icc_title"))),
+          shiny$div(
+            style = "width: 100%; text-align: center;",
+            shiny$plotOutput(ns("icc"), width = "80%", height = "100%")
+          ),
+          shiny$column(12, shiny$uiOutput(ns("icc_exp")))
+        )
       )
     })
 

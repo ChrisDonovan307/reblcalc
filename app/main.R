@@ -1,7 +1,7 @@
 box::use(
   shiny,
   bslib[bs_theme],
-  shinyjs[useShinyjs],
+  shinyjs[useShinyjs, reset],
   missRanger[missRanger],
   shinycssloaders[withSpinner]
 )
@@ -83,18 +83,6 @@ ui <- function(id) {
           ),
           shiny$tabPanel("REBL Items", withSpinner(rebl_items$ui("rebl_items"))),
           shiny$tabPanel("Skim", withSpinner(skim$ui("skim"))),
-
-          # shiny$observeEvent(import_values$analysis_state(), {
-          #   if (import_values$analysis_state()) {
-          #     shiny$insertTab(
-          #       'tabset',
-          #       shiny$tabPanel('Imputation'),
-          #       target = 'Skim',
-          #       positino = 'after'
-          #     )
-          #   }
-          # }),
-
           shiny$tabPanel("Imputation", withSpinner(imputation$ui("imputation"))),
           shiny$tabPanel("Item Map", withSpinner(item_map$ui("item_map"))),
           shiny$tabPanel("ICC Plot", withSpinner(icc_plot$ui("icc_plot"))),
@@ -113,6 +101,7 @@ ui <- function(id) {
 
 #' @export
 server <- function(input, output, session) {
+
   ## analysis_state ----
   # Set state to false. when true, download button appears, and landing page
   # becomes model test page
@@ -121,6 +110,11 @@ server <- function(input, output, session) {
   import_values <- button_values$import_values
   shiny$observeEvent(button_values$run_analysis(), {
     analysis_state(TRUE)
+  })
+  # When user hits reset, reset inputs
+  shiny$observeEvent(button_values$reset(), {
+    analysis_state(FALSE)
+    reset()
   })
 
   ## Server calls ----

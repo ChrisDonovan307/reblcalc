@@ -2,8 +2,7 @@ name: Test and Deploy
 on:
   push:
     branches:
-      # - main # Note: since we cannot renv::restore() with Rscript, pushing to main will break
-      # better off just pulling manually for now? Leaving dev in place
+      - main
       - dev
   pull_request:
     branches:
@@ -89,11 +88,11 @@ jobs:
           remote_user: ${{ secrets.REMOTE_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-          #       - name: Restore renv on remote server
-          #         run: |
-          #           ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
-          #             ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
-          #             "cd ${{ env.REMOTE_PATH }} && Rscript -e 'renv::restore()'"
+      - name: Restore renv on remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
+            ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
+            "cd ${{ env.REMOTE_PATH }} && /opt/mise/installs/r/4.5.1/bin/Rscript -e 'renv::restore()'"
 
           #       - name: Restore renv on remote server
           #         run: |

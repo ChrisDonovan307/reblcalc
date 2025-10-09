@@ -44,17 +44,11 @@ server <- function(id,
         pcar_obj()
       )
       shiny$tagList(
-        shiny$HTML("<br><br>"),
         shiny$downloadButton(
           ns("download_zip"),
           label = "Download results",
-          style =
-            "color: #fff;
-             background-color: #243f3f;
-             border-color: #243f3f;
-             border-radius: 10px;
-             border-width: 2px;
-             width: 100%;"
+          class = 'action-button',
+          icon = shiny$icon('download')
         )
       )
     })

@@ -1,0 +1,247 @@
+{
+  "input": {
+    "buttons-import-data_source": "example",
+    "buttons-import-file": null,
+    "buttons-import-respondent_id": "respondent_id",
+    "buttons-impute_option": false,
+    "buttons-link_option": false,
+    "buttons-reset": 0,
+    "buttons-run_analysis": 1,
+    "download-download_zip": 0,
+    "tabset": "Info"
+  },
+  "output": {
+    "buttons-analysis_button": {
+      "html": "<button class=\"btn btn-default action-button action-button\" id=\"buttons-run_analysis\" style=\"width:100%;\" type=\"button\">\n  <i class=\"fas fa-calculator\" role=\"presentation\" aria-label=\"calculator icon\"><\/i>\n  Run Analysis\n<\/button>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "6.5.2",
+          "src": {
+            "href": "font-awesome-6.5.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "buttons-import-dropdown_columns": {
+      "html": "<div class=\"button-box\">\n  <div class=\"form-group shiny-input-container\">\n    <label class=\"control-label\" id=\"buttons-import-respondent_id-label\" for=\"buttons-import-respondent_id\"><b>Select Respondent ID Column<\/b><\/label>\n    <div>\n      <select id=\"buttons-import-respondent_id\" class=\"shiny-input-select\"><option value=\"respondent_id\" selected>respondent_id<\/option>\n<option value=\"foodLocal\">foodLocal<\/option>\n<option value=\"foodLunchNoMeat\">foodLunchNoMeat<\/option>\n<option value=\"foodMeat\">foodMeat<\/option>\n<option value=\"foodOatMilk\">foodOatMilk<\/option>\n<option value=\"foodTofu\">foodTofu<\/option>\n<option value=\"foodVegan\">foodVegan<\/option>\n<option value=\"homeClothesCold\">homeClothesCold<\/option>\n<option value=\"homeClothesHang\">homeClothesHang<\/option>\n<option value=\"homeLightsOff\">homeLightsOff<\/option>\n<option value=\"packCarriedUtensils\">packCarriedUtensils<\/option>\n<option value=\"packCompost\">packCompost<\/option>\n<option value=\"packContainerToRestaurant\">packContainerToRestaurant<\/option>\n<option value=\"packPickedUpLitter\">packPickedUpLitter<\/option>\n<option value=\"packPullRecycleFromTrash\">packPullRecycleFromTrash<\/option>\n<option value=\"packRags\">packRags<\/option>\n<option value=\"packReusableMug\">packReusableMug<\/option>\n<option value=\"packReusedPaperPlasticBags\">packReusedPaperPlasticBags<\/option>\n<option value=\"purchBuyNothing\">purchBuyNothing<\/option>\n<option value=\"socialDocumentary\">socialDocumentary<\/option>\n<option value=\"socialGroup\">socialGroup<\/option>\n<option value=\"socialRead\">socialRead<\/option>\n<option value=\"socialSupportive\">socialSupportive<\/option>\n<option value=\"waterShowerStop\">waterShowerStop<\/option>\n<option value=\"waterTeethStop\">waterTeethStop<\/option><\/select>\n      <script type=\"application/json\" data-for=\"buttons-import-respondent_id\" data-nonempty=\"\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n    <\/div>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "selectize",
+          "version": "0.15.2",
+          "src": {
+            "href": "selectize-0.15.2"
+          },
+          "meta": null,
+          "script": [
+            "selectize.min.js",
+            "selectize-plugin-a11y.min.js"
+          ],
+          "stylesheet": "selectize.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    },
+    "buttons-impute_button": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <div class=\"awesome-checkbox checkbox-primary\">\n    <input id=\"buttons-impute_option\" type=\"checkbox\"/>\n    <label style=\"cursor: pointer;\" for=\"buttons-impute_option\">Impute missing data<\/label>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "shinyWidgets",
+          "version": "0.9.0",
+          "src": {
+            "href": "shinyWidgets"
+          },
+          "meta": null,
+          "script": "shinyWidgets-bindings.min.js",
+          "stylesheet": "shinyWidgets.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "awesome-bootstrap",
+          "version": "0.3.7",
+          "src": {
+            "href": "awesome-bootstrap-0.3.7"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "awesome-bootstrap.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "font-awesome",
+          "version": "6.5.2",
+          "src": {
+            "href": "font-awesome-6.5.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "buttons-link_button": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <div class=\"awesome-checkbox checkbox-primary\">\n    <input id=\"buttons-link_option\" type=\"checkbox\"/>\n    <label style=\"cursor: pointer;\" for=\"buttons-link_option\">Link and rescale scores<\/label>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "shinyWidgets",
+          "version": "0.9.0",
+          "src": {
+            "href": "shinyWidgets"
+          },
+          "meta": null,
+          "script": "shinyWidgets-bindings.min.js",
+          "stylesheet": "shinyWidgets.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "awesome-bootstrap",
+          "version": "0.3.7",
+          "src": {
+            "href": "awesome-bootstrap-0.3.7"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "awesome-bootstrap.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "font-awesome",
+          "version": "6.5.2",
+          "src": {
+            "href": "font-awesome-6.5.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "buttons-reset_button": {
+      "html": "<button class=\"btn btn-default action-button action-button\" id=\"buttons-reset\" style=\"width:100%;\" type=\"button\">\n  <i class=\"fas fa-recycle\" role=\"presentation\" aria-label=\"recycle icon\"><\/i>\n  Reset\n<\/button>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "6.5.2",
+          "src": {
+            "href": "font-awesome-6.5.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "download-download_button": {
+      "html": "<a aria-disabled=\"true\" class=\"btn btn-default shiny-download-link disabled action-button\" download href=\"\" id=\"download-download_zip\" tabindex=\"-1\" target=\"_blank\">\n  <i class=\"fas fa-download\" role=\"presentation\" aria-label=\"download icon\"><\/i>\n  Download results\n<\/a>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "6.5.2",
+          "src": {
+            "href": "font-awesome-6.5.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "landing-landing": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "validation-gof": "\nGoodness-of-Fit Tests\n                       value       df p-value\nCollapsed Deviance   211.009      264   0.993\nHosmer-Lemeshow       15.196        8   0.055\nRost Deviance       4328.761 16777192   1.000\nCasewise Deviance  10031.785    11966   1.000\n\nR-Squared Measures\nPearson R2: 0.419\nSum-of-Squares R2: 0.419\nMcFadden R2: 0.557\n\nClassifier Results - Confusion Matrix (relative frequencies)\n         observed\npredicted     0     1\n        0 0.577 0.120\n        1 0.068 0.235\n\nAccuracy: 0.812\nSensitivity: 0.662\nSpecificity: 0.895\nArea under ROC: 0.876\nGini coefficient: 0.751\n",
+    "validation-gof_exp_lr_title": {
+      "html": "<p>Here we have a slew of goodness of fit statistics for our Rasch model.\n        For details on interpretation, see\n        <a href=\"https://escholarship.org/content/qt1m46j62q/qt1m46j62q.pdf\">\n        Mair et al. (2008).<\/a><\/p>\n        <h3 class=\"body-header-3\">Invariance<\/h3>\n        ",
+      "deps": [
+
+      ]
+    },
+    "validation-gof_title": {
+      "html": "<h3 class=\"body-header-3\">Goodness of Fit<\/h3>",
+      "deps": [
+
+      ]
+    },
+    "validation-lr": "\nAndersen LR-test: \nLR-value: 16.967 \nChi-square df: 23 \np-value:  0.811 ",
+    "validation-lr_exp_pcar_title": {
+      "html": "<p>The LR test of measurement invariance splits respondents into two\n        groups by median score and tests whether there is a significant change\n        in likelihood of the model when item parameters are constrained to\n        equality across groups. If the p-value is < 0.05, we reject the null\n        hypothesis of measurement invariance. Otherwise, we fail to reject the\n        null and retain the null hypothesis of measurement invariance.<\/p>\n        <h3 class=\"body-header-3\">Unidimensionality<\/h3>\n        <p>Here we test that the scale is measuring a single dimension by running\n        a Principal Components Analysis (PCA).<\/p>",
+      "deps": [
+
+      ]
+    },
+    "validation-model_test_header": {
+      "html": "<h2 class=\"body-header-2\">Results<\/h2>\n        <p>Analysis is complete! On this page, you\n          can find fit statistics, the likelihood-ratio test of invariance, as\n          well as a test of unidimensionality using principal components\n          analysis.<\/p>",
+      "deps": [
+
+      ]
+    },
+    "validation-pcar_exp": {
+      "html": "<p>The top output shows the summary from the PCA model. The bottom output\n        shows the loadings of the principal components (SS loadings). If the\n        highest SS loading of any component is less than 2.0, thet test shows\n        demonstrates unidimensionality.<\/p>",
+      "deps": [
+
+      ]
+    },
+    "validation-pcar_loadings": "                             RC1        RC2       RC3        RC4\nSS loadings           1.40247770 1.37218306 1.3421449 1.33193307\nProportion Var        0.05843657 0.05717429 0.0559227 0.05549721\nCumulative Var        0.05843657 0.11561086 0.1715336 0.22703078\nProportion Explained  0.25739493 0.25183499 0.2463221 0.24444796\nCumulative Proportion 0.25739493 0.50922992 0.7555520 1.00000000",
+    "validation-pcar_sum": "\nFactor analysis with Call: principal(r = r, nfactors = nfactors, residuals = residuals, \n    rotate = rotate, n.obs = n.obs, covar = covar, scores = scores, \n    missing = missing, impute = impute, oblique.scores = oblique.scores, \n    method = method, use = use, cor = cor, correct = 0.5, weight = NULL)\n\nTest of the hypothesis that 4 factors are sufficient.\nThe degrees of freedom for the model is 186  and the objective function was  4.16 \nThe number of observations was  500  with Chi Square =  2025.64  with prob <  3.9e-306 \n\nThe root mean square of the residuals (RMSA) is  0.09 \n\n With component correlations of \n      RC1   RC2   RC3   RC4\nRC1  1.00 -0.08 -0.05  0.09\nRC2 -0.08  1.00 -0.08 -0.12\nRC3 -0.05 -0.08  1.00 -0.12\nRC4  0.09 -0.12 -0.12  1.00",
+    "validation-validation": {
+      "html": "<div class=\"row\">\n  <div class=\"col-sm-12\">\n    <div id=\"validation-model_test_header\" class=\"shiny-html-output\"><\/div>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <div id=\"validation-gof_title\" class=\"shiny-html-output\"><\/div>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <pre class=\"shiny-text-output noplaceholder\" id=\"validation-gof\"><\/pre>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <div id=\"validation-gof_exp_lr_title\" class=\"shiny-html-output\"><\/div>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <pre class=\"shiny-text-output noplaceholder\" id=\"validation-lr\"><\/pre>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <div id=\"validation-lr_exp_pcar_title\" class=\"shiny-html-output\"><\/div>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <pre class=\"shiny-text-output noplaceholder\" id=\"validation-pcar_sum\"><\/pre>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <pre class=\"shiny-text-output noplaceholder\" id=\"validation-pcar_loadings\"><\/pre>\n  <\/div>\n  <div class=\"col-sm-12\">\n    <div id=\"validation-pcar_exp\" class=\"shiny-html-output\"><\/div>\n  <\/div>\n<\/div>",
+      "deps": [
+
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

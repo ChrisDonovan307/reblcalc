@@ -26,15 +26,41 @@ server <- function(id, rval_df) {
 
     # Skim page ----
     output$skim <- shiny$renderUI({
-      shiny$req(rval_df(), rval_skim_df())
+
+      # Janky workaround to check for existence of rval_df()
+      df <- tryCatch(
+        {
+          rval_df()
+        },
+        error = function(e) NULL
+      )
+
+      # Show placeholder message if no rval_df()
+      if (is.null(df)) {
+        return(show_placeholder(
+          'Upload a dataset or use the example to explore summary statistics.'
+        ))
+      }
+
+      # Try to get skim results
+      skim_df <- tryCatch(
+        {
+          rval_skim_df()
+        },
+        error = function(e) NULL
+      )
+
+      if (is.null(skim_df) || nrow(skim_df) == 0) {
+        return(show_placeholder())
+      }
 
       # Check if there is anything to show
-      has_numeric <- any(rval_skim_df()$skim_type == "numeric")
-      has_factors <- any(rval_skim_df()$skim_type == "factor")
+      has_numeric <- any(skim_df$skim_type == "numeric")
+      has_factors <- any(skim_df$skim_type == "factor")
 
       # If nothing, return NULL (nothing rendered)
       if (!has_numeric && !has_factors) {
-        return(NULL)
+        return(show_placeholder())
       }
 
       shiny$tagList(
@@ -79,8 +105,10 @@ server <- function(id, rval_df) {
 
     # Skim numeric ----
     output$skim_numeric <- renderReactable({
-      shiny$req(rval_df(), rval_skim_df())
-      rval_skim_df() %>%
+      shiny$req(rval_df())
+      skim_df <- rval_skim_df()
+      shiny$req(skim_df)
+      skim_df %>%
         dplyr::filter(skim_type == "numeric") %>%
         dplyr::select(-c(starts_with("factor"), skim_type)) %>%
         setNames(c(
@@ -102,8 +130,9 @@ server <- function(id, rval_df) {
 
     # Skim factors ----
     output$skim_factor <- renderReactable({
-      shiny$req(rval_skim_df())
-      df <- rval_skim_df() %>%
+      skim_df <- rval_skim_df()
+      shiny$req(skim_df)
+      df <- skim_df %>%
         dplyr::filter(skim_type == "factor")
 
       if (nrow(df) == 0) {

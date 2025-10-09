@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap');
 
-body, * {
+body {
   font-family: 'Lora', sans-serif !important;
 }
 
-pre, code, .shiny-text-output, .shiny-verbatim-output {
-  font-family: monospace !important;
+/*
+html, body, .container-fluid, .row, .col-sm-4, .col-sm-8 {
+  background-color: #FFFEF2 !important;
+  color: #282828;
 }
+*/
 
 .body-header-1 {
   color: #2F4F4F !important;
@@ -31,8 +34,8 @@ pre, code, .shiny-text-output, .shiny-verbatim-output {
 
 /* box around button groups */
 .button-box {
-  border: 1.5px solid #8B7355;
-  border-radius: 5px;
+  border: 2px solid #243f3f;
+  border-radius: 4px;
   padding: 10px 10px 10px 10px; /* insides */
   display: flex;
   flex-direction: column;
@@ -45,8 +48,29 @@ pre, code, .shiny-text-output, .shiny-verbatim-output {
 
 /* border of sidebar panel */
 .well {
-  border: 2px solid #8B7355;
-  border-radius: 5px;
-  box-shadow: none;
+  border: 2px solid #243f3f;
+  border-radius: 4px;
+  /*box-shadow: none;*/
   border-width: 1px;
 }
+
+.action-button {
+  color: #fff;
+  background-color: #243f3f;
+  border: 1px solid #000000 !important;
+  border-radius: 10px;
+  border-width: 3px,
+
+  display: block;
+  box-sizing: border-box;
+  margin: 0 auto 10px auto;
+  width: 100%;
+}
+
+/*
+  width: 100%;
+  margin: 10px;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+*/

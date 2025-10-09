@@ -1,6 +1,7 @@
 box::use(
   shiny,
-  shinyWidgets[awesomeCheckbox]
+  shinyWidgets[awesomeCheckbox],
+  fontawesome[fa]
 )
 
 box::use(
@@ -13,13 +14,13 @@ ui <- function(id) {
   shiny$tagList(
     import$ui(ns("import")),
     shiny$div(
-      # style = 'padding: 0px 10px 0px 10px;',
       class = "button-box",
       shiny$HTML("<b>Analysis Options</b>"),
       shiny$uiOutput(ns("impute_button")),
       shiny$uiOutput(ns("link_button")),
     ),
-    shiny$uiOutput(ns("analysis_button"))
+    shiny$uiOutput(ns("analysis_button")),
+    shiny$uiOutput(ns("reset_button"))
   )
 }
 
@@ -29,6 +30,17 @@ server <- function(id) {
     ns <- session$ns
 
     import_values <- import$server("import")
+
+    output$reset_button <- shiny$renderUI({
+      shiny$req(import_values$rval_df())
+      shiny$actionButton(
+        ns("reset"),
+        "Reset",
+        icon = shiny$icon('recycle', lib = 'font-awesome'),
+        width = "100%",
+        class = 'action-button'
+      )
+    })
 
     output$impute_button <- shiny$renderUI({
       awesomeCheckbox(
@@ -51,13 +63,9 @@ server <- function(id) {
       shiny$actionButton(
         ns("run_analysis"),
         "Run Analysis",
+        icon = shiny$icon('calculator', lib = 'font-awesome'),
         width = "100%",
-        style =
-          "color: #fff;
-           background-color: #243f3f;
-           border-color: #243f3f;
-           border-radius: 10px;
-           border-width: 2px"
+        class = 'action-button'
       )
     })
 
@@ -66,12 +74,15 @@ server <- function(id) {
       import_values = import_values,
       impute_option = shiny$reactive(input$impute_option),
       link_option = shiny$reactive(input$link_option),
-      run_analysis = shiny$reactive(input$run_analysis)
+      run_analysis = shiny$reactive(input$run_analysis),
+      reset = shiny$reactive(input$reset)
     ))
   })
 }
 
-# Other buttons that we never finished
+
+## Button Graveyard
+
 # output$model_button <- renderui({
 #   req(input$file)
 #   pickerinput(
