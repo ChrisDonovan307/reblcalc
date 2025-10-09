@@ -90,9 +90,17 @@ jobs:
 
       - name: Restore renv on remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
+          chmod 600 id_rsa
+          ssh -o StrictHostKeyChecking=no -i id_rsa \
             ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
             "cd ${{ env.REMOTE_PATH }} && /opt/mise/installs/r/4.5.1/bin/Rscript -e 'renv::restore()'"
+
+            #       - name: Restore renv on remote server
+            #         run: |
+            #           ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
+            #             ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
+            #             "cd ${{ env.REMOTE_PATH }} && /opt/mise/installs/r/4.5.1/bin/Rscript -e 'renv::restore()'"
 
           #       - name: Restore renv on remote server
           #         run: |
